@@ -1,4 +1,4 @@
-package com.gridcircle.bean_order;
+package com.gridcircle;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
