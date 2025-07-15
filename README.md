@@ -24,7 +24,6 @@ Grid &amp; Circle 커피 원두 주문 시스템
 - Backend: 
 - Database: 
 
-
 ---
 
 ## ▶️ 실행 방법
