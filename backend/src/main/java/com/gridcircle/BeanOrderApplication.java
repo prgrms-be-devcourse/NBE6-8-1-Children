@@ -9,6 +9,4 @@ public class BeanOrderApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BeanOrderApplication.class, args);
 	}
-
-	// asdf
 }
