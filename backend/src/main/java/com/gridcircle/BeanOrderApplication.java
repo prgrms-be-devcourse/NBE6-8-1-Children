@@ -10,4 +10,6 @@ public class BeanOrderApplication {
 		SpringApplication.run(BeanOrderApplication.class, args);
 	}
 
+	// 커밋 가능 확인 용
+
 }
