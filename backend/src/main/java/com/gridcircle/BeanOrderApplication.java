@@ -10,4 +10,5 @@ public class BeanOrderApplication {
 		SpringApplication.run(BeanOrderApplication.class, args);
 	}
 
+	// asdf
 }
