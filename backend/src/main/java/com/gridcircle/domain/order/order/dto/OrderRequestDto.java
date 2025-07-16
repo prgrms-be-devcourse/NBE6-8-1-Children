@@ -9,15 +9,14 @@ public record OrderRequestDto (
         String address,
         String orderStatus,
         boolean deliveryStatus,
-        String createdDate,
-        String modifiedDate,
         List<OrderItemRequestDto> orderItems
 ){
     public record OrderItemRequestDto(
             int productId,
             String productName,
             int orderCount,
-            int productPrice
+            int productPrice,
+            String productImage
     ){}
 
 }

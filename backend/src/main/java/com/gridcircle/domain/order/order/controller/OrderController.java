@@ -1,6 +1,5 @@
 package com.gridcircle.domain.order.order.controller;
 
-import com.gridcircle.domain.member.member.service.MemberService;
 import com.gridcircle.domain.order.order.dto.OrderPageResponseDto;
 import com.gridcircle.domain.order.order.dto.OrderRequestDto;
 import com.gridcircle.domain.order.order.dto.OrderResponseDto;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    private final MemberService memberService;
 
 
     // 주문 페이지 (장바구니에서 데이터 조회)
@@ -32,12 +30,10 @@ public class OrderController {
     }
 
     // 주문 페이지에서 주문 등록 요청
-    @PostMapping("/{memberId}")
-    public OrderResponseDto createOrder(
-            @PathVariable int memberId,
-            @RequestBody OrderRequestDto requestDto
-    ) {
-        return orderService.createOrder(requestDto, memberId);
+    @PostMapping("/basket/me/order")
+    public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @AuthenticationPrincipal SecurityUser user) {
+        OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, user.getId()); // 프론트에서 보내온 요청에 담긴 데이터와 토큰에서 추출한 사용자 id 전달
+        return responseDto;
     }
 
 }
