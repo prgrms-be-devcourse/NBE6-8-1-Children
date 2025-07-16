@@ -1,4 +1,4 @@
-package com.gridcircle.domain.member.member.entity;
+package com.gridcircle.domain.product.product.entity;
 
 import com.gridcircle.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Entity;

@@ -1,17 +1,10 @@
-package com.gridcircle.domain.member.member.service;
+package com.gridcircle.domain.product.product.service;
 
-import com.gridcircle.domain.member.member.entity.Member;
-import com.gridcircle.domain.member.member.entity.Product;
-import com.gridcircle.domain.member.member.repository.MemberRepository;
-import com.gridcircle.domain.member.member.repository.ProductRepository;
-import com.gridcircle.global.exception.ServiceException;
+import com.gridcircle.domain.product.product.entity.Product;
+import com.gridcircle.domain.product.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ExpressionException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

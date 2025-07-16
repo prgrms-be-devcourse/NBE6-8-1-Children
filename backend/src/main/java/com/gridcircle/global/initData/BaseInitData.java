@@ -1,9 +1,9 @@
 package com.gridcircle.global.initData;
 
 import com.gridcircle.domain.member.member.entity.Member;
-import com.gridcircle.domain.member.member.entity.Product;
+import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.member.member.service.MemberService;
-import com.gridcircle.domain.member.member.service.ProductService;
+import com.gridcircle.domain.product.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -40,8 +40,14 @@ public class BaseInitData {
     public void makeProduct() {
         if (productService.count() > 0) return;
 
-        Product product1 = productService.write("Natural Plants", "기본적인 원두 입니다.", "https://ifh.cc/g/HqQCN0.jpg" , 5000, 20);
-        Product product2 = productService.write("Premium Beans", "프리미엄 원두 입니다.", "https://ifh.cc/g/CORDgm.jpg", 10000, 15);
-        Product product3 = productService.write("Special Blend", "스페셜 블렌딩 원두 입니다.", "https://ifh.cc/g/xoVO1D.jpg", 15000, 10);
+        Product product1 = productService.write("Natural Plants", "기본적인 원두 입니다.", "" , 5000, 20);
+        Product product2 = productService.write("Premium Beans", "프리미엄 원두 입니다.", "", 10000, 15);
+
+        Product product3 = productService.write("Special Blend", "스페셜 블렌딩 원두 입니다.", "", 15000, 10);
+
+        // 기본원두 https://ifh.cc/g/xoVO1D.jpg https://ifh.cc/v-HqQCN0 https://postimg.cc/tY7xKyfR
+        // 프리미엄 원두 https://postimg.cc/CzKGwbZg https://ifh.cc/v-CORDgm
+        // 스페셜 https://postimg.cc/9D7qfbCv https://postimg.cc/k6nVfdKm https://postimg.cc/HcBrNP97
+        // 커피 수확 https://postimg.cc/yWpJXtNM 라떼 https://postimg.cc/VrGNg0zq
     }
 }
