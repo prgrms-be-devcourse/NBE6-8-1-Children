@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/grid/products/")
@@ -21,5 +23,17 @@ public class ProductController {
     public ProductDto getProducts(@PathVariable int id){
         Product product = productService.getProductById(id);
         return new ProductDto(product);
+    }
+
+    @GetMapping
+    @Transactional(readOnly = true)
+    @Operation(summary = "다건 조회")
+    public List<ProductDto> getItems() {
+        List<Product> items = productService.findAll();
+
+        return items
+                .stream()
+                .map(ProductDto::new) // PostDto로 변환
+                .toList();
     }
 }

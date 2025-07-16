@@ -33,10 +33,10 @@ export default function RootLayout({ children }) {
             <Link href="/" className="text-black hover:font-bold">
               Home
             </Link>
-            <Link href="/products" className="text-gray-500 hover:text-black">
+            <Link href="/#products" className="text-gray-500 hover:text-black">
               Products
             </Link>
-            <Link href="/contacts" className="text-gray-500 hover:text-black">
+            <Link href="/#about" className="text-gray-500 hover:text-black">
               Contacts
             </Link>
           </nav>

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -17,6 +19,10 @@ public class ProductService {
                 .orElseThrow(()-> new ExpressionException("상품을 찾을 수 없습니다."));
     }
 
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
+
     public long count() {
         return productRepository.count();
     }
@@ -26,4 +32,6 @@ public class ProductService {
 
         return productRepository.save(product);
     }
+
+
 }

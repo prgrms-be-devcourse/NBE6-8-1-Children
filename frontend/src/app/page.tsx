@@ -1,28 +1,21 @@
+"use client"
+
+import { apiFetch } from "@/lib/backend/client";
 import Image from "next/image";
 import Link from "next/link";
-
-const products = [
-  {
-    id: 1,
-    name: "Natural Plants",
-    price: 5000,
-    image: "/main/menu_3.jpg",
-  },
-  {
-    id: 2,
-    name: "Premium Beans",
-    price: 5000,
-    image: "/main/menu_3.jpg",
-  },
-  {
-    id: 3,
-    name: "Special Blend",
-    price: 5000,
-    image: "/main/menu_3.jpg",
-  },
-];
+import { useEffect, useState } from "react";
+import type { ProductDto } from "@/type/product";
 
 export default function Home() {
+  const [products, setProducts] = useState<ProductDto[]>([]);
+
+  useEffect(() => {
+    apiFetch("/grid/products/") // 여러 상품을 반환하는 API 엔드포인트로 수정
+      .then(setProducts)
+  }, []);
+
+  if (products == null) return <div>로딩중...</div>;
+
   return (
     <div className="bg-white flex flex-col gap-24 w-full max-w-7xl mx-auto px-4 sm:px-8 text-black">
       {/* Hero Section */}
@@ -63,33 +56,37 @@ export default function Home() {
       </section>
 
       {/* Products Section */}
-      <section className="w-full text-black">
+      <section id="products" className="w-full text-black">
         <h3 className="text-xl font-bold mb-6 text-black">PRODUCTS</h3>
         <div className="flex flex-wrap gap-8 justify-around">
-          {products.map((product) => (
-            <Link
-              key={product.id}
-              href={`/products/${product.id}`}
-              className="flex flex-col items-center w-48 cursor-pointer hover:scale-105 transition-transform"
-            >
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={200}
-                height={200}
-                className="rounded-lg object-cover mb-4"
-              />
-              <div className="font-medium text-black">{product.name}</div>
-              <div className="text-gray-800 text-sm">
-                ₩ {product.price.toLocaleString()}
-              </div>
-            </Link>
-          ))}
+          {products.map((product) => {
+            // productImage를 배열로 변환
+            const imageArray = product.productImage.split("|");
+            return (
+              <Link
+                key={product.id}
+                href={`grid/products/${product.id}`}
+                className="flex flex-col items-center w-48 cursor-pointer hover:scale-105 transition-transform"
+              >
+                <Image
+                  src={imageArray[0]} // 첫 번째 이미지를 사용
+                  alt={product.productName}
+                  width={300}
+                  height={200}
+                  className="rounded-lg object-cover mb-4"
+                />
+                <div className="font-medium text-black">{product.productName}</div>
+                <div className="text-gray-800 text-sm">
+                  ₩ {product.price.toLocaleString()}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
       {/* About Us Section */}
-      <section className="w-full flex flex-col items-center mt-12 text-black">
+      <section id="about" className="w-full flex flex-col items-center mt-12 text-black">
         <h3 className="text-xl font-bold mb-2 text-black">About us</h3>
         <div className="text-gray-800 mb-8">
           Order now and appreciate the beauty of nature
