@@ -2,6 +2,7 @@ package com.gridcircle.domain.member.member.controller;
 
 import com.gridcircle.domain.member.member.entity.Member;
 import com.gridcircle.domain.member.member.service.MemberService;
+import jakarta.servlet.http.Cookie;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -40,7 +43,7 @@ public class MemberControllerTest {
                                         {
                                             "email": "usernew@gmail.com",
                                             "name": "사용자1",
-                                            "password": "1234568910",
+                                            "password": "12345678910",
                                             "address": "서울시 강남구 역삼동",
                                             "role": "ROLE_USER"
                                         }
@@ -183,4 +186,54 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.msg").value(containsString("주소는 필수 입력값입니다.")));
     }
+
+    @Test
+    @DisplayName("로그인")
+    void t7() throws Exception {
+        t1();
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/grid/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "email": "usernew@gmail.com",
+                                            "password": "12345678910"
+                                        }
+                                        """.stripIndent())
+                )
+                .andDo(print());
+
+        Member member = memberService.findByEmail("usernew@gmail.com").get();
+
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("login"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%s님 환영합니다.".formatted(member.getName())))
+                .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data.item").exists())
+                .andExpect(jsonPath("$.data.item.id").value(member.getId()))
+                .andExpect(jsonPath("$.data.item.createdDate").value(Matchers.startsWith(member.getCreatedDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.data.item.modifiedDate").value(Matchers.startsWith(member.getModifiedDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.data.item.name").value(member.getName()))
+                .andExpect(jsonPath("$.data.apiKey").value(member.getApiKey()))
+                .andExpect(jsonPath("$.data.accessToken").isNotEmpty());
+
+        resultActions.andExpect(
+                result -> {
+                    Cookie apiKeyCookie = result.getResponse().getCookie("apiKey");
+                    assertThat(apiKeyCookie.getValue()).isEqualTo(member.getApiKey());
+                    assertThat(apiKeyCookie.getPath()).isEqualTo("/");
+                    assertThat(apiKeyCookie.getAttribute("HttpOnly")).isEqualTo("true");
+
+                    Cookie accessTokenCookie = result.getResponse().getCookie("accessToken");
+                    assertThat(accessTokenCookie.getValue()).isNotBlank();
+                    assertThat(accessTokenCookie.getPath()).isEqualTo("/");
+                    assertThat(accessTokenCookie.getAttribute("HttpOnly")).isEqualTo("true");
+                }
+        );
+    }
+
 }

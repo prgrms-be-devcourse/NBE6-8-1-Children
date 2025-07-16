@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
+    private final AuthTokenService authTokenService;
     private final MemberRepository memberRepository;
     @Autowired
     private final PasswordEncoder passwordEncoder;
@@ -45,5 +45,14 @@ public class MemberService {
 
         Member member = new Member( email, name, password, address, role);
         return memberRepository.save(member);
+    }
+
+    public void checkPassword(Member member, String password) {
+        if (!passwordEncoder.matches(password, member.getPassword()))
+            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+    }
+
+    public String genAccessToken(Member member) {
+        return authTokenService.genAccessToken(member);
     }
 }
