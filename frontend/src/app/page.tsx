@@ -6,19 +6,19 @@ const products = [
     id: 1,
     name: "Natural Plants",
     price: 5000,
-    image: "/main/menu_3.jpg",
+    image: "https://ifh.cc/g/HqQCN0.jpg",
   },
   {
     id: 2,
     name: "Premium Beans",
     price: 5000,
-    image: "/main/menu_3.jpg",
+    image: "https://ifh.cc/g/CORDgm.jpg",
   },
   {
     id: 3,
     name: "Special Blend",
     price: 5000,
-    image: "/main/menu_3.jpg",
+    image: "https://ifh.cc/g/xoVO1D.jpg",
   },
 ];
 
@@ -52,7 +52,7 @@ export default function Home() {
         {/* Right: Hero Image */}
         <div className="flex-1 flex justify-center">
           <Image
-            src="/main/main_coffee.jpg" // public 폴더에 coffee.jpg 추가 필요
+            src="https://ifh.cc/g/nRZyVs.jpg" // public 폴더에 coffee.jpg 추가 필요
             alt="Coffee beans"
             width={450}
             height={260}
