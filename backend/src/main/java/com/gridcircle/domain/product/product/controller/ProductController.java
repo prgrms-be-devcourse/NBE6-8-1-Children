@@ -1,17 +1,12 @@
-package com.gridcircle.domain.member.member.controller;
+package com.gridcircle.domain.product.product.controller;
 
-import com.gridcircle.domain.member.member.dto.MemberWithUserEmailDto;
-import com.gridcircle.domain.member.member.dto.ProductDto;
-import com.gridcircle.domain.member.member.entity.Member;
-import com.gridcircle.domain.member.member.entity.Product;
-import com.gridcircle.domain.member.member.service.MemberService;
-import com.gridcircle.domain.member.member.service.ProductService;
+import com.gridcircle.domain.product.product.dto.ProductDto;
+import com.gridcircle.domain.product.product.entity.Product;
+import com.gridcircle.domain.product.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
