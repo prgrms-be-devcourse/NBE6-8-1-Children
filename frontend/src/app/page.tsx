@@ -1,13 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Home() {
-  // 서버 컴포넌트에서 fetch로 데이터 받아오기
-  const res = await fetch("http://localhost:8080/api/products", {
-    cache: "no-store",
-  });
-  const products = await res.json();
+const products = [
+  {
+    id: 1,
+    name: "Natural Plants",
+    price: 5000,
+    image: "/main/menu_3.jpg",
+  },
+  {
+    id: 2,
+    name: "Premium Beans",
+    price: 5000,
+    image: "/main/menu_3.jpg",
+  },
+  {
+    id: 3,
+    name: "Special Blend",
+    price: 5000,
+    image: "/main/menu_3.jpg",
+  },
+];
 
+export default function Home() {
   return (
     <div className="bg-white flex flex-col gap-24 w-full max-w-7xl mx-auto px-4 sm:px-8 text-black">
       {/* Hero Section */}
@@ -37,7 +52,7 @@ export default async function Home() {
         {/* Right: Hero Image */}
         <div className="flex-1 flex justify-center">
           <Image
-            src="https://ifh.cc/g/nRZyVs.jpg"
+            src="/main/main_coffee.jpg" // public 폴더에 coffee.jpg 추가 필요
             alt="Coffee beans"
             width={450}
             height={260}
