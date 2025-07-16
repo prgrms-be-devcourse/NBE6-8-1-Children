@@ -1,6 +1,7 @@
 package com.gridcircle.global.exception;
 
 
+import com.gridcircle.global.rsData.RsData;
 
 public class ServiceException extends RuntimeException {
     private final String resultCode;
@@ -11,5 +12,7 @@ public class ServiceException extends RuntimeException {
         this.resultCode = resultCode;
         this.msg = msg;
     }
-
+    public RsData<Void> getRsData() {
+        return new RsData<>(resultCode, msg, null);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,9 @@ public class MemberService {
                 .sum();
     }
 
-
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
     public Member join(String email, String name, String password, String address, String role ) {
         memberRepository
                 .findByEmail(email)
