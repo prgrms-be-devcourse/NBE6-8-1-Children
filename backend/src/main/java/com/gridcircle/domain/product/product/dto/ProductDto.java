@@ -1,7 +1,6 @@
-package com.gridcircle.domain.member.member.dto;
+package com.gridcircle.domain.product.product.dto;
 
-import com.gridcircle.domain.member.member.entity.Member;
-import com.gridcircle.domain.member.member.entity.Product;
+import com.gridcircle.domain.product.product.entity.Product;
 
 import java.time.LocalDateTime;
 
