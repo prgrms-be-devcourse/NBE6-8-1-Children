@@ -12,12 +12,12 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class OrderItem extends BaseEntity {
-    private String productName;
-    private int orderCount;
-    private int productPrice;
+    private String productName; // 주문한 상품 이름
+    private int orderCount; // 주문한 상품 개수
+    private int productPrice; // 상품 가격
 
     @ManyToOne
-    private Order order;
+    private Order order; 
 
     //@ManyToOne
     //private Product product;

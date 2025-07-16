@@ -14,18 +14,18 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class Order extends BaseEntity {
-    private long totalPrice;
+    private long totalPrice; // 주문 총 가격
 
-    private String address;
+    private String address; // 주소
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus orderStatus; // 주문 상태
 
-    private boolean deliveryStatus;
+    private boolean deliveryStatus; // 배송 상태
 
     //@ManyToOne
     //private Member member;
 
     @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<>(); // 주문 품목들
 }
