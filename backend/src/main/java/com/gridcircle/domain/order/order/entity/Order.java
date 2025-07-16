@@ -1,5 +1,6 @@
 package com.gridcircle.domain.order.order.entity;
 
+import com.gridcircle.domain.member.member.entity.Member;
 import com.gridcircle.global.jpa.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,8 +24,9 @@ public class Order extends BaseEntity {
 
     private boolean deliveryStatus; // 배송 상태
 
-    //@ManyToOne
-    //private Member member;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member; //FK
 
     @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<OrderItem> orderItems = new ArrayList<>(); // 주문 품목들

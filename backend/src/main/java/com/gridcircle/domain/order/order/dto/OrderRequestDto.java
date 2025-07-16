@@ -1,20 +1,20 @@
 package com.gridcircle.domain.order.order.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+// 프론트에서 주문 페이지 데이터 POST 요청이 왔을 때,
+// 그 요청에 있는 데이터들을 받을 Dto
 public record OrderRequestDto (
-        int totalPrice,
+        long totalPrice,
         String address,
         String orderStatus,
         boolean deliveryStatus,
-        LocalDateTime createdDate,
-        LocalDateTime modifiedDate,
-        //Long memberId,
+        String createdDate,
+        String modifiedDate,
         List<OrderItemRequestDto> orderItems
 ){
     public record OrderItemRequestDto(
-            Long productId,
+            int productId,
             String productName,
             int orderCount,
             int productPrice
