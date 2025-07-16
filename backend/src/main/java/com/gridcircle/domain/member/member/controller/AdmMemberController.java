@@ -45,7 +45,4 @@ public class AdmMemberController {
 
         return new MemberWithUserEmailDto(member);
     }
-
-
-
 }

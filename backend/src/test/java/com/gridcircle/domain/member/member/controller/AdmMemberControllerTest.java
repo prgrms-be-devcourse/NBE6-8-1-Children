@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -32,6 +33,7 @@ public class AdmMemberControllerTest {
 
     @Test
     @DisplayName("Admin - 회원 목록 다건 조회")
+    @WithUserDetails("admin@gmail.com")
     void t1() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
@@ -62,6 +64,7 @@ public class AdmMemberControllerTest {
 
     @Test
     @DisplayName("Admin - 회원 목록 단건 조회")
+    @WithUserDetails("admin@gmail.com")
     void t2() throws Exception {
         int id =1;
         ResultActions resultActions = mvc
@@ -85,4 +88,20 @@ public class AdmMemberControllerTest {
 
 
     }
+
+    @Test
+    @DisplayName("user - 회원 목록 다건 조회")
+    @WithUserDetails("admin1@gmail.com")
+    void t3() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/grid/admin/members")
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(status().isForbidden());
+    }
 }
+
+
