@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { apiFetch } from "@/lib/backend/client";
 import Image from "next/image";
@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     apiFetch("/grid/products/") // 여러 상품을 반환하는 API 엔드포인트로 수정
-      .then(setProducts)
+      .then(setProducts);
   }, []);
 
   if (products == null) return <div>로딩중...</div>;
@@ -75,7 +75,9 @@ export default function Home() {
                   height={200}
                   className="rounded-lg object-cover mb-4"
                 />
-                <div className="font-medium text-black">{product.productName}</div>
+                <div className="font-medium text-black">
+                  {product.productName}
+                </div>
                 <div className="text-gray-800 text-sm">
                   ₩ {product.price.toLocaleString()}
                 </div>
@@ -86,7 +88,10 @@ export default function Home() {
       </section>
 
       {/* About Us Section */}
-      <section id="about" className="w-full flex flex-col items-center mt-12 text-black">
+      <section
+        id="about"
+        className="w-full flex flex-col items-center mt-12 text-black"
+      >
         <h3 className="text-xl font-bold mb-2 text-black">About us</h3>
         <div className="text-gray-800 mb-8">
           Order now and appreciate the beauty of nature
