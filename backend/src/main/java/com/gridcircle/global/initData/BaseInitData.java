@@ -1,4 +1,4 @@
-package com.gridcircle.global;
+package com.gridcircle.global.initData;
 
 import com.gridcircle.domain.member.member.entity.Member;
 import com.gridcircle.domain.member.member.service.MemberService;

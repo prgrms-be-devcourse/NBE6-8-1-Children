@@ -20,4 +20,25 @@ public class MemberWithUserEmailDto {
         this.modifiedDate = member.getModifiedDate();
 
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+
+    }
 }
