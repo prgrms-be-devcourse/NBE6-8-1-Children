@@ -9,7 +9,7 @@ interface OrderPageItem {
   productName: string;
   productPrice: number;
   productCount: number;
-  productImage?: string; // 이미지 경로
+  productImage: string; 
 }
 
 interface OrderPageResponse {
@@ -44,18 +44,17 @@ export default function OrderPage() {
       address, // 주소
       orderStatus: 'ORDERED', // 주문상태
       deliveryStatus: false, // 배송상태
-      createdDate: new Date().toISOString(), // 주문일자
-      modifiedDate: new Date().toISOString(), // 수정일자
       orderItems: items.map(item => ({ // 주문 상품 목록
         productId: item.productId, // 상품ID
         productName: item.productName, // 상품명
         orderCount: item.productCount, // 주문 수량
-        productPrice: item.productPrice // 상품 가격
+        productPrice: item.productPrice, // 상품 가격
+        productImage: item.productImage // 상품 이미지
       }))
     };
 
     // 서버의 /order 엔드포인트로 orderPayload 객체를 POST 요청
-    axios.post('/grid/orders/order', orderPayload)
+    axios.post('/grid/orders/basket/me/order', orderPayload)
       .then(() => {
         setShowPopup(true); // 서버에서 응답이 오면(성공하면) 팝업창 띄우기
       })
