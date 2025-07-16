@@ -40,10 +40,12 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
   const { product } = productState;
 
   // 썸네일 이미지 배열 (첫 번째는 상품 대표 이미지, 나머지는 커피 관련 임시 이미지)
+  const imageArray = product.productImage.split("|").map(s => s.toString());
+  
   const thumbnails = [
-    product.productImage,
-    "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=400&q=80",
-    "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80",
+    imageArray[0],
+    imageArray[1],
+    imageArray[2],
   ];
 
   // 메인 이미지 상태 (썸네일 hover 시 변경)
@@ -240,7 +242,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
         </h3>
         {/* 커피 농장 사진 (상세 설명 위에 위치) */}
         <img
-          src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
+          src={imageArray[3] ? String(imageArray[3]) : ""} // string으로 변환, 없으면 ""
           alt="커피 농장"
           style={{
             width: 225,
