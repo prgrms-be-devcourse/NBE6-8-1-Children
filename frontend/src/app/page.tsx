@@ -15,7 +15,7 @@ export default function Home() {
   }, []);
 
   if (products == null) return <div>로딩중...</div>;
-
+  
   return (
     <div className="bg-white flex flex-col gap-24 w-full max-w-7xl mx-auto px-4 sm:px-8 text-black">
       {/* Hero Section */}
