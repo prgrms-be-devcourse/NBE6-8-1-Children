@@ -20,6 +20,7 @@ public class AdmMemberController {
     private final MemberService memberService;
 
 
+
     @GetMapping
     @Transactional(readOnly = true)
     @Operation(summary = "관리자용 회원 목록 조회")
@@ -31,6 +32,5 @@ public class AdmMemberController {
                 .map(MemberWithUserEmailDto::new)
                 .toList();
     }
-
 
 }
