@@ -8,7 +8,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     // 실제 백엔드 API 주소로 변경 필요
-    fetch("http://localhost:8080/api/admin/members")
+    fetch("http://localhost:8080/gird/admin/members")
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
