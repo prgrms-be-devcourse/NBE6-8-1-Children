@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -55,4 +56,12 @@ public class MemberService {
     public String genAccessToken(Member member) {
         return authTokenService.genAccessToken(member);
     }
+
+    public Optional<Member> findByApiKey(String apiKey) {
+        return memberRepository.findByApiKey(apiKey);
+    }
+    public Map<String, Object> payload(String accessToken) {
+        return authTokenService.payload(accessToken);
+    }
+
 }
