@@ -8,22 +8,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/grid/admin/members")
+@RequestMapping("/grid/admin")
 @RequiredArgsConstructor
 public class AdmMemberController {
     private final MemberService memberService;
 
 
 
-    @GetMapping
+    @GetMapping("/members")
     @Transactional(readOnly = true)
-    @Operation(summary = "관리자용 회원 목록 조회")
+    @Operation(summary = "Admin - 회원 목록 다건 조회")
     public List<MemberWithUserEmailDto> getMembers() {
         List<Member> members = memberService.findAll();
 
@@ -32,5 +33,19 @@ public class AdmMemberController {
                 .map(MemberWithUserEmailDto::new)
                 .toList();
     }
+
+    @GetMapping("/member/{id}")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Admin - 회원 목록 단건 조회")
+    public MemberWithUserEmailDto getMember(
+            @PathVariable int id
+    ) {
+        Member member = memberService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + id));
+
+        return new MemberWithUserEmailDto(member);
+    }
+
+
 
 }
