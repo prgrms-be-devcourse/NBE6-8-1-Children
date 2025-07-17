@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; 
+import { useAuthContext } from "@/global/auth/hooks/useAuth";
 
 export default function SignupPage() {
   const router = useRouter();
+  const auth = useAuthContext();
+
   const [formData, setFormData] = useState({
     email: '',  
     password: '',
@@ -164,7 +167,9 @@ export default function SignupPage() {
   
       const loginResult = await loginRes.json();
       console.log('로그인 성공:', loginResult);
-  
+      auth.login(() => {
+        router.push('/');
+      });
       alert(`${loginResult.data.item.name}님, 환영합니다!`);
   
       // ✅ 로그인 후 라우팅 (예: 메인 페이지 또는 이전 페이지로)
