@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import type { ProductDto } from "@/type/product";
+import { useRouter } from "next/navigation";
 
 function useProduct(id: number) {
   const [product, setProduct] = useState<ProductDto | null>(null);
@@ -89,9 +90,19 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
     });
   };
 
+  const router = useRouter();
+  const currentId = Number(product.id);
+
+  // 페이지 이동 함수
+  const goToProduct = (newId: number) => {
+    if (newId > 0) {
+      router.push(`/grid/products/${newId}`);
+    }
+  };
+
   // 페이지 프론트 부분
   return (
-    <div className="min-h-screen flex items-center justify-center]">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="max-w-7xl w-full mx-auto p-12 bg-[#f5e7d4] rounded-2xl shadow-2xl">
         {/* 상단: 상품명 */}
         <h2 className="text-6xl font-extrabold text-center text-brown-900 mb-12 tracking-tight">
@@ -105,7 +116,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
               alt={product.productName}
               width={500}
               height={500}
-              className="rounded-2xl object-cover shadow-lg border border-brown-200 mb-5"
+              className="rounded-2xl object-cover shadow-lg border border-brown-200 mb-5 aspect-square"
             />
             <div className="flex gap-4 mt-4">
               {thumbnailArray.map((img, i) => (
@@ -115,7 +126,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
                   alt={`썸네일${i + 1}`}
                   width={150}
                   height={150}
-                  className={`rounded-lg border-2 ${mainImage === img ? "border-yellow-700" : "border-gray-300"} cursor-pointer object-cover`}
+                  className={`rounded-lg border-2 ${mainImage === img ? "border-yellow-700" : "border-gray-300"} cursor-pointer object-cover aspect-square`}
                   onMouseEnter={() => setMainImage(img)}
                 />
               ))}
@@ -130,9 +141,9 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <div className="mb-4 text-xl text-gray-600">재고: {product.stock}개</div>
             {/* 수량 선택 + 장바구니 */}
             <div className="flex items-center gap-6 mt-8">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-700 text-white">-</button>
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-700 hover:bg-yellow-800 text-white">-</button>
               <span className="font-bold text-3xl">{quantity}</span>
-              <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-700 text-white">+</button>
+              <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-700 hover:bg-yellow-800 text-white">+</button>
               <button className="ml-8 px-10 py-4 bg-yellow-700 hover:bg-yellow-800 text-white rounded-xl font-semibold shadow-lg text-2xl transition">
                 장바구니 담기
               </button>
@@ -148,6 +159,25 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <strong>로스팅:</strong> 미디엄 로스트<br />
             <strong>설명:</strong> 이 커피는 브라질의 청정 고지대에서 자란 원두만을 엄선하여, 깊고 진한 풍미와 깔끔한 뒷맛이 특징입니다.
           </p>
+        </div>
+        {/* 최하단: 커피 페이지 이동 */}
+        <div className="flex justify-center items-center gap-8 mt-10">
+          <button
+            onClick={() => goToProduct(currentId - 1)}
+            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition"
+            aria-label="이전 커피"
+            disabled={currentId <= 1}
+          >
+            &#8592;
+          </button>
+          <span className="text-xl font-bold text-gray-700">다른 커피 보기</span>
+          <button
+            onClick={() => goToProduct(currentId + 1)}
+            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition"
+            aria-label="다음 커피"
+          >
+            &#8594;
+          </button>
         </div>
       </div>
     </div>
