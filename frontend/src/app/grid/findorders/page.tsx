@@ -59,7 +59,7 @@ export default function FindOrdersPage() {
     }
   };
 
-  // 전날 오후 2시 ~ 오늘 오후 2시 사이 주문만 취소 가능
+  // 전날 오후 2시 ~ 오늘 오후 2시 사이 주문만 취소 가능 (+ 오후 2시가 지나면 취소 불가)
   const canCancelOrder = (createdDate: string): boolean => {
     const orderDate = new Date(createdDate);
     const now = new Date();
@@ -68,7 +68,8 @@ export default function FindOrdersPage() {
     yesterday2PM.setHours(14, 0, 0, 0);
     const today2PM = new Date(now);
     today2PM.setHours(14, 0, 0, 0);
-    return orderDate >= yesterday2PM && orderDate <= today2PM;
+    // 주문이 전날 오후 2시~오늘 오후 2시 사이에 생성됐고 지금이 오늘 오후 2시 이전이면 취소가능
+    return orderDate >= yesterday2PM && orderDate <= today2PM && now <= today2PM;
   };
 
   // 주문 취소 처리를 위한 로직직
@@ -166,7 +167,8 @@ export default function FindOrdersPage() {
                         <span>
                           <b>배송 상태 :</b> {getDeliveryStatusText(order)}
                         </span>
-                        {!isCancelled && (
+                        {/* 주문 취소 버튼 노출 조건 */}
+                        {!isCancelled && canCancelOrder(order.createdDate) && (
                           <button
                             className="border border-black px-4 py-1 rounded hover:bg-gray-100"
                             onClick={() => handleCancelOrder(order.id)}
