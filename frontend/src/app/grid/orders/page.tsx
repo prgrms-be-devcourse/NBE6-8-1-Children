@@ -8,7 +8,7 @@ interface OrderPageItem {
   productId: number;
   productName: string;
   productPrice: number;
-  productCount: number;
+  orderCount: number;
   productImage: string; 
 }
 
@@ -35,7 +35,7 @@ export default function OrderPage() {
   }, []);
 
   // 총 금액 계산
-  const getTotal = () => items.reduce((sum, item) => sum + item.productPrice * item.productCount, 0);
+  const getTotal = () => items.reduce((sum, item) => sum + item.productPrice * item.orderCount, 0);
 
   // 결제하기 버튼 클릭 시 서버로 POST 요청될 주문페이지의 모든 데이터들
   const handleOrder = () => {
@@ -47,7 +47,7 @@ export default function OrderPage() {
       orderItems: items.map(item => ({ // 주문 상품 목록
         productId: item.productId, // 상품ID
         productName: item.productName, // 상품명
-        orderCount: item.productCount, // 주문 수량
+        orderCount: item.orderCount, // 주문 수량
         productPrice: item.productPrice, // 상품 가격
         productImage: item.productImage // 상품 이미지
       }))
@@ -85,7 +85,7 @@ export default function OrderPage() {
                 <div style={{ flex: 1, fontWeight: 600, fontSize: '1.05rem' }}>{item.productName}</div>
                 <div style={{ fontWeight: 600, marginRight: 16 }}>{item.productPrice.toLocaleString()}원</div>
                 <span style={{ background: '#333', color: 'white', padding: '2px 12px', borderRadius: '12px', fontSize: '0.93rem', fontWeight: 500 }}>
-                  {item.productCount}개
+                  {item.orderCount}개
                 </span>
               </div>
             ))}
