@@ -7,12 +7,14 @@ import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+
 
     public Product getProductById(int id){
         return productRepository.findById(id)
@@ -31,5 +33,38 @@ public class ProductService {
         Product product = new Product(productName, description, productImage, price, stock);
 
         return productRepository.save(product);
+    }
+
+    public List<Product> findAllProducts() {
+        return productRepository.findAll();
+    }
+
+    public Product findByProductName(String productName) {
+        return productRepository.findByProductName((productName))
+                .orElseThrow(() -> new ExpressionException("상품을 찾을 수 없습니다."));
+
+
+    }
+
+    public Optional<Product> findById(int id) {
+        return productRepository.findById(id);
+    }
+
+//    product,
+//            reqBody.productName(),
+//            reqBody.description(),
+//            reqBody.productImage(),
+//            reqBody.price(),
+//            reqBody.stock()
+
+
+    public void update(Product product, String productName, String description, String productImage, int price, int stock) {
+        product.update(
+                productName,
+                description,
+                productImage,
+                price,
+                stock
+        );
     }
 }

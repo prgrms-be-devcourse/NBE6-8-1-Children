@@ -23,4 +23,12 @@ public class Product extends BaseEntity {
         this.stock = stock;
 
     }
+
+    public void update(String productName, String description, String productImage, int price, int stock) {
+        this.productName = productName;
+        this.description = description;
+        this.productImage = productImage;
+        this.price = price;
+        this.stock = stock;
+    }
 }

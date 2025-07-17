@@ -22,4 +22,5 @@ public class HomeController {
         List<Product> products = productService.findAll();
         return products;
     }
+
 }
