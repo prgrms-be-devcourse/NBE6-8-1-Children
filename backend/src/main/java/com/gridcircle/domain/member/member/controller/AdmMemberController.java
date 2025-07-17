@@ -138,4 +138,15 @@ public class AdmMemberController {
                 new ProductDto(product)
         );
     }
+
+    @GetMapping("/products")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Admin - 상품 목록 조회")
+    public List<ProductDto> getProducts() {
+        List<Product> products = productService.findAllProducts();
+
+        return products.stream()
+                .map(ProductDto::new)
+                .toList();
+    }
 }

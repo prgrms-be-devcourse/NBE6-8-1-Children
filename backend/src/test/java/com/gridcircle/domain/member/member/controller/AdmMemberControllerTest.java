@@ -183,6 +183,38 @@ public class AdmMemberControllerTest {
                 .andExpect(jsonPath("$.data.description").value(product.getDescription()));
     }
 
+    @Test
+    @DisplayName("Admin - 상품 목록 다건 조회")
+    @WithUserDetails("admin@gmail.com")
+    void t6() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/grid/admin/products")
+                )
+                .andDo(print());
+
+        List<Product> products = productService.findAllProducts();
+
+        resultActions
+                .andExpect(handler().handlerType(AdmMemberController.class))
+                .andExpect(handler().methodName("getProducts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(products.size()));
+
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            resultActions
+                    .andExpect(jsonPath("$[%d].id".formatted(i)).value(product.getId()))
+                    .andExpect(jsonPath("$[%d].createdDate".formatted(i)).value(Matchers.startsWith(product.getCreatedDate().toString().substring(0, 20))))
+                    .andExpect(jsonPath("$[%d].modifiedDate".formatted(i)).value(Matchers.startsWith(product.getModifiedDate().toString().substring(0, 20))))
+                    .andExpect(jsonPath("$[%d].productName".formatted(i)).value(product.getProductName()))
+                    .andExpect(jsonPath("$[%d].description".formatted(i)).value(product.getDescription()))
+                    .andExpect(jsonPath("$[%d].productImage".formatted(i)).value(product.getProductImage()))
+                    .andExpect(jsonPath("$[%d].price".formatted(i)).value(product.getPrice()))
+                    .andExpect(jsonPath("$[%d].stock".formatted(i)).value(product.getStock()));
+        }
+    }
+
 }
 
 
