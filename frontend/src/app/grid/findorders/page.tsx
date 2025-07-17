@@ -10,13 +10,6 @@ enum OrderStatus {
   CANCELLED = "CANCELLED"
 }
 
-// 배송 상태 enum
-enum DeliveryStatus {
-  BEFORE_DELIVERY = "BEFORE_DELIVERY",
-  DELIVERY_STARTED = "DELIVERY_STARTED",
-  DELIVERED = "DELIVERED"
-}
-
 // 주문 아이템 타입
 interface OrderItemDto {
   id: number;
@@ -34,7 +27,7 @@ interface OrderDto {
   address: string;
   totalPrice: number;
   orderStatus: OrderStatus;
-  deliveryStatus: DeliveryStatus;
+  deliveryStatus: boolean; // boolean으로 통일
   orderItems: OrderItemDto[];
 }
 
@@ -115,12 +108,12 @@ export default function FindOrdersPage() {
     }
   };
 
-  // deliveryStatus(배송상태)를 한글 텍스트로 변환.
+  // 배송 상태 텍스트
   const getDeliveryStatusText = (order: OrderDto): string => {
     if (order.orderStatus === OrderStatus.CANCELLED) {
-      return "배송 불가"; // orderStatus가 CANCELLED(취소)되면 배송상태는 배송불가로 표기 
+      return "배송 불가";
     }
-    return order.deliveryStatus ? "배송 시작" : "배송 시작 전"; // deliveryStatus가 true면 배송시작, false면 배송 시작 전전
+    return order.deliveryStatus ? "배송 시작" : "배송 시작 전";
   };
 
   // 데이터 로딩 중에는 로딩중... 이라는 메시지 표시시

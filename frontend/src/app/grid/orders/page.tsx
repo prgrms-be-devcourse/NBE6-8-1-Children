@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { apiFetch } from "@/lib/backend/client";
 import { useRouter } from 'next/navigation';
 
 interface OrderPageItem {
@@ -26,10 +26,10 @@ export default function OrderPage() {
 
   // 주문페이지 진입 시 서버에서 데이터 받아오기
   useEffect(() => {
-    axios.get<OrderPageResponse>('/grid/orders/basket/me') // 해당 API로 서버에 GET요청. memberId는 토큰?으로 추출(Rq에 getActor()로)
-      .then(res => {
-        setAddress(res.data.address); //서버가 보낸 응답데이터가 담긴 res.data에서 주소 추출
-        setItems(res.data.items); // 서버가 보낸 응답데이터에서 items 추출(커피관련정보)
+    apiFetch('/grid/orders/basket/me') // 해당 API로 서버에 GET요청. memberId는 토큰?으로 추출(Rq에 getActor()로)
+      .then((res: OrderPageResponse) => {
+        setAddress(res.address); //서버가 보낸 응답데이터가 담긴 res.data에서 주소 추출
+        setItems(res.items); // 서버가 보낸 응답데이터에서 items 추출(커피관련정보)
       })
       .catch(err => alert('주문 데이터 불러오기 실패: ' + err.message));
   }, []);
@@ -54,7 +54,13 @@ export default function OrderPage() {
     };
 
     // 서버의 /order 엔드포인트로 orderPayload 객체를 POST 요청
-    axios.post('/grid/orders/basket/me/order', orderPayload)
+    apiFetch('/grid/orders/basket/me/order', {
+      method: "POST",
+      body: JSON.stringify(orderPayload),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
       .then(() => {
         setShowPopup(true); // 서버에서 응답이 오면(성공하면) 팝업창 띄우기
       })
