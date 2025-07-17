@@ -47,7 +47,7 @@ public class OrderService {
                     product.getProductName(),
                     product.getPrice(),
                     basket.getProductCount(),
-                    product.getProductImage().split("&")[0] // 첫번째 이미지 url만 프론트로 전송
+                    product.getProductImage().split("|")[0] // 첫번째 이미지 url만 프론트로 전송
             ));
         }
         return new OrderPageResponseDto(member.getAddress(), items); // 장바구니 항목 + 현재 로그인한 사용자의 주소를 Dto로 생성 후 return

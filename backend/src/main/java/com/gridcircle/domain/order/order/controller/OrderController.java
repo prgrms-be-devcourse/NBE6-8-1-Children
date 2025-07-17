@@ -31,6 +31,8 @@ public class OrderController {
 
     // 주문 페이지에서 주문 등록 요청
     @PostMapping("/basket/me/order")
+    @Transactional
+    @Operation(summary = "주문 데이터 등록")
     public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @AuthenticationPrincipal SecurityUser user) {
         OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, user.getId()); // 프론트에서 보내온 요청에 담긴 데이터와 토큰에서 추출한 사용자 id 전달
         return responseDto;
