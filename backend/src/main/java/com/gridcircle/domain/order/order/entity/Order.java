@@ -20,9 +20,9 @@ public class Order extends BaseEntity {
     private String address; // 주소
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus; // 주문 상태
+    private OrderStatus orderStatus = OrderStatus.ORDERED; // 주문 상태
 
-    private boolean deliveryStatus; // 배송 상태
+    private boolean deliveryStatus = false; // 배송 상태
 
     @ManyToOne
     @JoinColumn(name = "member_id")

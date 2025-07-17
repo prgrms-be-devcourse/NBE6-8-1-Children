@@ -11,7 +11,7 @@ public record OrderResponseDto (
         long totalPrice,
         String address,
         String orderStatus,
-        String deliveryStatus,
+        boolean deliveryStatus,
         String createdDate,
         String modifiedDate,
         List<OrderItemResponseDto> orderItems
@@ -22,9 +22,9 @@ public record OrderResponseDto (
                 order.getTotalPrice(),
                 order.getAddress(),
                 order.getOrderStatus().name(),  // enum orderStatus를 String 타입으로 전달!
-                order.isDeliveryStatus() ? "배송 시작" : "배송 시작 전", // deliveryStatus는 boolean인데, true면 배송시작, false면 배송시작전 String으로
+                order.isDeliveryStatus(),
                 order.getCreatedDate().toString(), // createdDate가 LocalDateTime타입이니까, String으로 바꿈
-                order.getModifiedDate().toString(),
+                order.getModifiedDate() != null ? order.getModifiedDate().toString() : null,
                 order.getOrderItems().stream().map(OrderItemResponseDto::new).toList()
         );
     }
@@ -34,7 +34,8 @@ public record OrderResponseDto (
             int productId,
             String productName,
             int orderCount,
-            int productPrice
+            int productPrice,
+            String productImage
     ){
         public OrderItemResponseDto(OrderItem item){
             this(
@@ -42,7 +43,8 @@ public record OrderResponseDto (
                     item.getProduct().getId(),
                     item.getProductName(),
                     item.getOrderCount(),
-                    item.getProductPrice()
+                    item.getProductPrice(),
+                    item.getProductImage()
             );
         }
     }

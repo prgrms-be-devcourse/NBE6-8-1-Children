@@ -2,9 +2,7 @@ package com.gridcircle.domain.order.order.entity;
 
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.global.jpa.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity

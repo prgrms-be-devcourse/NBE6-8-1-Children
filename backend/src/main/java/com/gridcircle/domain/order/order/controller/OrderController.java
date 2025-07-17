@@ -11,6 +11,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/grid/orders")
 @RequiredArgsConstructor
@@ -36,6 +38,15 @@ public class OrderController {
     public OrderResponseDto createOrder(@RequestBody OrderRequestDto orderRequestDto, @AuthenticationPrincipal SecurityUser user) {
         OrderResponseDto responseDto = orderService.createOrder(orderRequestDto, user.getId()); // 프론트에서 보내온 요청에 담긴 데이터와 토큰에서 추출한 사용자 id 전달
         return responseDto;
+    }
+
+    // 주문 내역 조회 페이지
+    @GetMapping("findOrder")
+    @Transactional(readOnly = true)
+    @Operation(summary = "주문 내역 조회 페이지 데이터 조회")
+    public List<OrderResponseDto> getOrderHistory(@AuthenticationPrincipal SecurityUser userDetails){
+        int memberId = userDetails.getId();
+        return orderService.getOrderHistory(memberId);
     }
 
 }

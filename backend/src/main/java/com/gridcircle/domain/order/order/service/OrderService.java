@@ -96,4 +96,13 @@ public class OrderService {
         // 주문 내역 db에 등록한 데이터를 dto로 변환하여 응답
         return new OrderResponseDto(savedOrder);
     }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponseDto> getOrderHistory(int memberId) {
+        // 해당 사용자의 모든 주문(Order) 조회
+        List<Order> orders = orderRepository.findByMemberId(memberId);
+        return orders.stream()
+                .map(OrderResponseDto::new)
+                .toList(); //주문 리스트를 dto리스트로 변환 (프론트에 응답 보내기 위해)
+    }
 }
