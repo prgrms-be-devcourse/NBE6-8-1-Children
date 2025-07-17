@@ -11,8 +11,8 @@ public record ProductDto (
         String productImage, // 상품 이미지 URL
         int price, // 상품 가격
         int stock, // 재고 수량
-        LocalDateTime createDate,
-        LocalDateTime midifiedDate
+        LocalDateTime createdDate,
+        LocalDateTime modifiedDate
 ){
     public ProductDto(Product product) {
         this(

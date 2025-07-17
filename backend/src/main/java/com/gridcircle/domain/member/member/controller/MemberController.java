@@ -45,6 +45,7 @@ public class MemberController {
             }
         }
     }
+
     @PostMapping("/members")
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
