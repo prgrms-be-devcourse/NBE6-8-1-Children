@@ -215,6 +215,33 @@ public class AdmMemberControllerTest {
         }
     }
 
+    @Test
+    @DisplayName("Admin - 상품 목록 단건 조회")
+    @WithUserDetails("admin@gmail.com")
+    void t7() throws Exception {
+        int id = 1;
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/grid/admin/products" + id)
+                )
+                .andDo(print());
+
+        Product product = productService.getProductById(id);
+
+        resultActions
+                .andExpect(handler().handlerType(AdmMemberController.class))
+                .andExpect(handler().methodName("getMember"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(product.getId()))
+                .andExpect(jsonPath("$.createdDate").value(Matchers.startsWith(product.getCreatedDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.modifiedDate").value(Matchers.startsWith(product.getModifiedDate().toString().substring(0, 20))))
+                .andExpect(jsonPath("$.productName").value(product.getProductName()))
+                .andExpect(jsonPath("$.description").value(product.getDescription()))
+                .andExpect(jsonPath("$.productImage").value(product.getProductImage()))
+                .andExpect(jsonPath("$.price").value(product.getPrice()))
+                .andExpect(jsonPath("$.stock").value(product.getStock()));
+    }
+
 }
 
 
