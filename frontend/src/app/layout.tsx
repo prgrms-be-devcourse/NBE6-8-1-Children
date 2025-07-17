@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import React from "react";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   description: "grid & Circle",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <body className="min-h-screen flex flex-col bg-white font-sans">
@@ -51,9 +52,11 @@ export default function RootLayout({ children }) {
             <span className="ml-4 text-xl cursor-pointer" title="Cart">
               🛒
             </span>
-            <span className="ml-2 text-xl cursor-pointer" title="User">
-              👤
-            </span>
+            <Link href="/grid/findorders">
+              <span className="ml-2 text-xl cursor-pointer" title="User">
+                👤
+              </span>
+            </Link>
           </div>
         </header>
         {/* Main Content */}
