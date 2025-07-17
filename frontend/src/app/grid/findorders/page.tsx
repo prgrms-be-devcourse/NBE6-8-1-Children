@@ -65,9 +65,9 @@ export default function FindOrdersPage() {
     return orderDate >= yesterday2PM && orderDate <= today2PM && now <= today2PM;
   };
 
-  // 주문 취소 처리를 위한 로직직
+  // 주문 취소 처리를 위한 로직
   const handleCancelOrder = async (orderId: number) => {
-    if (!confirm("해당 주문을 정말 취소하시겠습니까?")) {
+    if (!confirm("해당 주문을 정말 취소하시겠습니까?")) { // 팝업창
       return;
     }
     try {
@@ -77,9 +77,9 @@ export default function FindOrdersPage() {
       });
       await fetchOrders();
       alert("주문이 취소되었습니다."); // 주문 취소 시 팝업창 뜸. 사용자가 ok 버튼 누르면 팝업 닫히고, 갱신된 주문 내역이 화면에 보임임
-    } catch (error) {
+    } catch (error) { // 주문 취소 실패 시
       console.error("주문 취소에 실패했습니다:", error);
-      alert("주문 취소에 실패했습니다.");
+      alert("배송이 시작되어 주문을 취소할 수 없습니다."); // 팝업창
     }
   };
 
