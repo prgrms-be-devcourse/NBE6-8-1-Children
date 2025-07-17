@@ -222,7 +222,7 @@ public class AdmMemberControllerTest {
         int id = 1;
         ResultActions resultActions = mvc
                 .perform(
-                        get("/grid/admin/products" + id)
+                        get("/grid/admin/product/" + id)
                 )
                 .andDo(print());
 
@@ -230,7 +230,7 @@ public class AdmMemberControllerTest {
 
         resultActions
                 .andExpect(handler().handlerType(AdmMemberController.class))
-                .andExpect(handler().methodName("getMember"))
+                .andExpect(handler().methodName("getProduct"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(product.getId()))
                 .andExpect(jsonPath("$.createdDate").value(Matchers.startsWith(product.getCreatedDate().toString().substring(0, 20))))

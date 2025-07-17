@@ -141,12 +141,21 @@ public class AdmMemberController {
 
     @GetMapping("/products")
     @Transactional(readOnly = true)
-    @Operation(summary = "Admin - 상품 목록 조회")
+    @Operation(summary = "Admin - 상품 목록 다건 조회")
     public List<ProductDto> getProducts() {
         List<Product> products = productService.findAllProducts();
 
         return products.stream()
                 .map(ProductDto::new)
                 .toList();
+    }
+
+    @GetMapping("/product/{id}")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Admin - 상품 목록 단건 조회")
+    public ProductDto getProduct(@PathVariable int id) {
+        Product product = productService.getProductById(id);
+
+        return new ProductDto(product);
     }
 }
