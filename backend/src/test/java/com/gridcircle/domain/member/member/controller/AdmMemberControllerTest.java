@@ -99,7 +99,7 @@ public class AdmMemberControllerTest {
     }
 
     @Test
-    @DisplayName("user - 회원 목록 다건 조회")
+    @DisplayName("user - 회원 목록 다건 조회( 권한 없음 )")
     @WithUserDetails("admin1@gmail.com")
     void t3() throws Exception {
         ResultActions resultActions = mvc
@@ -183,6 +183,31 @@ public class AdmMemberControllerTest {
                         """.stripIndent().trim()));
     }
 
+    @Test
+    @DisplayName("User - 상품 등록 실패 (권한 없음)")
+    @WithUserDetails("user1@gmail.com")
+    void t11() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/grid/admin/createProduct")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                {
+                                    "productName": "Coffee",
+                                    "description": "커피",
+                                    "productImage": "https://example.com/img.jpg",
+                                    "price": 1000,
+                                    "stock": 10
+                                }
+                                """.stripIndent())
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(status().isForbidden());
+    }
+
+
 
     @Test
     @DisplayName("Admin - 상품 수정")
@@ -217,6 +242,32 @@ public class AdmMemberControllerTest {
                 .andExpect(jsonPath("$.data.productName").value(product.getProductName()))
                 .andExpect(jsonPath("$.data.description").value(product.getDescription()));
     }
+
+    @Test
+    @DisplayName("Admin - 상품 수정 실패 (존재하지 않는 상품)")
+    @WithUserDetails("admin@gmail.com")
+    void t12() throws Exception {
+        int nonExistentId = 9999;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        put("/grid/admin/product/" + nonExistentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                                "productName": "new name",
+                                "description": "설명",
+                                "productImage": "https://img.jpg",
+                                "price": 5000,
+                                "stock": 10
+                            }
+                            """))
+                .andDo(print());
+        resultActions
+                .andExpect(status().isBadRequest()) // or 404 depending on exception handler
+                .andExpect(jsonPath("$.resultCode").value("400-1"));
+    }
+
 
     @Test
     @DisplayName("Admin - 상품 목록 다건 조회")
@@ -278,7 +329,7 @@ public class AdmMemberControllerTest {
     }
 
     @Test
-    @DisplayName("글 삭제")
+    @DisplayName("Admin - 상품 삭제")
     @WithUserDetails("admin@gmail.com")
     void t8() throws Exception {
         int id = 1;
@@ -295,6 +346,26 @@ public class AdmMemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200-1"))
                 .andExpect(jsonPath("$.msg").value("%d번 상품이 삭제되었습니다.".formatted(id)));
+    }
+
+    @Test
+    @DisplayName("Admin - 상품 삭제 실패 (존재하지 않는 상품)")
+    @WithUserDetails("admin@gmail.com")
+    void t10() throws Exception {
+        int id = 9999;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/grid/admin/product/" + id)
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(AdmMemberController.class))
+                .andExpect(handler().methodName("delete"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("등록되지 않은 상품입니다."));
     }
 
 }

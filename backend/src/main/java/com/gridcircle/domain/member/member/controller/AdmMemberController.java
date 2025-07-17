@@ -6,6 +6,7 @@ import com.gridcircle.domain.member.member.service.MemberService;
 import com.gridcircle.domain.product.product.dto.ProductDto;
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.service.ProductService;
+import com.gridcircle.global.exception.ServiceException;
 import com.gridcircle.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -93,6 +94,8 @@ public class AdmMemberController {
         );
     }
 
+
+
     record ProductModifyReqBody(
 
             @NotBlank
@@ -164,7 +167,10 @@ public class AdmMemberController {
     @Operation(summary = "Admin - 상품 삭제")
     public RsData<ProductDto> delete(@PathVariable int id) {
         Product product = productService.delete(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
+                .orElseThrow(() -> new ServiceException(
+                        "400-1"
+                        ,"등록되지 않은 상품입니다."
+                ));
 
         return new RsData<>(
                 "200-1",
