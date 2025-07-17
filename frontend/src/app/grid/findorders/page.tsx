@@ -80,6 +80,7 @@ export default function FindOrdersPage() {
     } catch (error) { // 주문 취소 실패 시
       console.error("주문 취소에 실패했습니다:", error);
       alert("배송이 시작되어 주문을 취소할 수 없습니다."); // 팝업창
+      fetchOrders(); // 주문 내역 다시 불러옴 -> 리렌더링
     }
   };
 
