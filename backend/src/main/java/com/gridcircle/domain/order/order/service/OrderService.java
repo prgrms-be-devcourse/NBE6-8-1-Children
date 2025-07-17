@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +25,7 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
     //private final ShoppingBasketRepository shoppingBasketRepository;
+
 
     // 장바구니에 있는 데이터 + 사용자 주소를 주문 페이지로 보내주기 위한 dto를 생성하는 메서드 (프론트의 get요청)
     @Transactional(readOnly=true)
@@ -53,6 +53,8 @@ public class OrderService {
         }
         return new OrderPageResponseDto(member.getAddress(), items); // 장바구니 항목 + 현재 로그인한 사용자의 주소를 Dto로 생성 후 return
     }
+
+
 
     // 주문페이지에서 결제하기 버튼을 눌렀을 때, 주문 내역을 저장하는 메서드 (프론트의 post요청)
     @Transactional
