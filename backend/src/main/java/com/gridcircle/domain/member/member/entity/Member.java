@@ -68,4 +68,11 @@ public class Member extends BaseEntity {
 
         return authorities;
     }
+
+    public Member(int id, String email, String name, String role) {
+        setId(id);
+        this.email = email;
+        setName(name);
+        this.role = role;
+    }
 }

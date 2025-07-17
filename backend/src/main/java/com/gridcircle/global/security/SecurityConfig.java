@@ -1,7 +1,5 @@
 package com.gridcircle.global.security;
 
-import com.gridcircle.global.rsData.RsData;
-import com.gridcircle.global.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

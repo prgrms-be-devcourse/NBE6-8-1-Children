@@ -33,11 +33,11 @@ public class BaseInitData {
     public void makeAdmin() {
         if(memberService.findByRole() > 0) return;
 
-        Member member= memberService.join("admin@gmail.com", "admin", "1234", "서울시 강남구 역삼동", "ADMIN");
-        Member member1= memberService.join("admin1@gmail.com", "두효정", "1234", "서울시 강남구 역삼동","USER");
-        Member member2= memberService.join("admin2@gmail.com", "양현준", "1234", "서울시 강남구 역삼동", "USER");
+        Member member= memberService.join("admin@gmail.com", "admin", "1234", "서울시 강남구 역삼동", "ROLE_ADMIN");
+        Member member1= memberService.join("admin1@gmail.com", "두효정", "1234", "서울시 강남구 역삼동","ROLE_USER");
+        Member member2= memberService.join("admin2@gmail.com", "양현준", "1234", "서울시 강남구 역삼동", "SER");
         Member member3= memberService.join("admin3@gmail.com", "이예진", "1234", "서울시 강남구 역삼동", "USER");
-        Member member4= memberService.join("admin4@gmail.com", "석희성", "1234", "서울시 강남구 역삼동", "USER");
+        Member member4= memberService.join("admin4@gmail.com", "석희성", "1234", "서울시 강남구 역삼동", "SER");
     }
 
     @Transactional
