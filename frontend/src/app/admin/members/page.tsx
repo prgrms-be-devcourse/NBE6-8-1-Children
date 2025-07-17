@@ -8,15 +8,9 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     // 실제 백엔드 API 주소로 변경 필요
-    fetch("http://localhost:8080/grid/admin/members", {
-      headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiQURNSU4iLCJuYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluMTJAZ21haWwuY29tIiwiaWQiOjYsImlhdCI6MTc1MjczODA2MSwiZXhwIjoxNzUyNzM5MjYxfQ.Q4Jk9pC-o7WJ6SX3xYQUjHUtYfnQ_fh9MHFxjdUfGbt3vBGaUck-jEU9zllCBvxdUH4KgLtG2DkwRuyuweonuA",
-      },
-    })
+    fetch("http://localhost:8080/grid/admin/members")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setUsers(data);
         setLoading(false);
       });

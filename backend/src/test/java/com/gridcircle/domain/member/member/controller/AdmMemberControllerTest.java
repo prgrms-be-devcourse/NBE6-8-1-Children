@@ -99,7 +99,7 @@ public class AdmMemberControllerTest {
     }
 
     @Test
-    @DisplayName("user - 회원 목록 다건 조회( 권한 없음 )")
+    @DisplayName("User - 회원 목록 다건 조회( 권한 없음 )")
     @WithUserDetails("admin1@gmail.com")
     void t3() throws Exception {
         ResultActions resultActions = mvc
@@ -185,7 +185,7 @@ public class AdmMemberControllerTest {
 
     @Test
     @DisplayName("User - 상품 등록 실패 (권한 없음)")
-    @WithUserDetails("user1@gmail.com")
+    @WithUserDetails("admin1@gmail.com")
     void t11() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
@@ -194,7 +194,7 @@ public class AdmMemberControllerTest {
                                 .content("""
                                 {
                                     "productName": "Coffee",
-                                    "description": "커피",
+                                    "description": "커피입니다",
                                     "productImage": "https://example.com/img.jpg",
                                     "price": 1000,
                                     "stock": 10
