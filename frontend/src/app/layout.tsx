@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import React from "react";
+import { ReactNode } from "react";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 
 import "./globals.css";
+import { AuthProvider } from "@/global/auth/hooks/useAuth";
+
+import HeaderLayout from "@/app/headerLayout"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,44 +24,13 @@ export const metadata: Metadata = {
   description: "grid & Circle",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
       <body className="min-h-screen flex flex-col bg-white font-sans">
+        <AuthProvider>
         {/* Header */}
-        <header className="w-full flex items-center justify-between px-12 py-6 border-b border-gray-200">
-          {/* Logo */}
-          <div className="font-extrabold text-2xl">Grid & Circle</div>
-          {/* Navigation */}
-          <nav className="flex gap-8 text-base font-medium">
-            <Link href="/" className="text-black hover:font-bold">
-              Home
-            </Link>
-            <Link href="/#products" className="text-gray-500 hover:text-black">
-              Products
-            </Link>
-            <Link href="/#about" className="text-gray-500 hover:text-black">
-              Contacts
-            </Link>
-          </nav>
-          {/* Actions */}
-          <div className="flex items-center gap-4">
-            <button className="px-4 py-1 border rounded-full text-sm font-medium border-gray-400 hover:bg-gray-100">
-              signup
-            </button>
-            <button className="px-4 py-1 rounded-full text-sm font-medium bg-black text-white hover:bg-gray-800">
-              login
-            </button>
-            <span className="ml-4 text-xl cursor-pointer" title="Cart">
-              🛒
-            </span>
-            <Link href="/grid/findorders">
-              <span className="ml-2 text-xl cursor-pointer" title="User">
-                👤
-              </span>
-            </Link>
-          </div>
-        </header>
+        <HeaderLayout />
         {/* Main Content */}
         <main className="flex-1 flex flex-col">{children}</main>
         {/* Footer */}
@@ -106,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </footer>
+        </AuthProvider>
       </body>
     </html>
   );
