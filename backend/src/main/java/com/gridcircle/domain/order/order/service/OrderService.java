@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +116,12 @@ public class OrderService {
         // 추가로 본인 주문이 맞는지 체크 (혹시나해서)
         if (order.getMember().getId() != memberId){
             throw new IllegalArgumentException("본인 주문만 취소할 수 있습니다.");
+        }
+        //현재 시각이 오늘 오후 2시를 지난 시간이라면 취소 불가능
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime todayTwoPM = now.withHour(14).withMinute(0).withSecond(0).withNano(0);
+        if(now.isAfter(todayTwoPM)){
+            throw new IllegalArgumentException();
         }
         order.setOrderStatus(OrderStatus.CANCELLED);
         //modifiedDate는 @LastModifiedDate에 의해 자동 갱신되므로 생략
