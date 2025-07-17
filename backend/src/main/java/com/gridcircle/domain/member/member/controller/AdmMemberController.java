@@ -158,4 +158,18 @@ public class AdmMemberController {
 
         return new ProductDto(product);
     }
+
+    @DeleteMapping("/product/{id}")
+    @Transactional(readOnly = true)
+    @Operation(summary = "Admin - 상품 삭제")
+    public RsData<ProductDto> delete(@PathVariable int id) {
+        Product product = productService.delete(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + id));
+
+        return new RsData<>(
+                "200-1",
+                "%d번 상품이 삭제되었습니다.".formatted(product.getId()),
+                new ProductDto(product)
+        );
+    }
 }

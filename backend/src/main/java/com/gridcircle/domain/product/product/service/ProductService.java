@@ -67,4 +67,12 @@ public class ProductService {
                 stock
         );
     }
+
+    public Optional<Product> delete(int id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    productRepository.delete(product);
+                    return product;
+                });
+    }
 }

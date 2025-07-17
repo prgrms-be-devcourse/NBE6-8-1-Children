@@ -23,6 +23,7 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -240,6 +241,26 @@ public class AdmMemberControllerTest {
                 .andExpect(jsonPath("$.productImage").value(product.getProductImage()))
                 .andExpect(jsonPath("$.price").value(product.getPrice()))
                 .andExpect(jsonPath("$.stock").value(product.getStock()));
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    @WithUserDetails("admin@gmail.com")
+    void t8() throws Exception {
+        int id = 1;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/grid/admin/product/" + id)
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(AdmMemberController.class))
+                .andExpect(handler().methodName("delete"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 상품이 삭제되었습니다.".formatted(id)));
     }
 
 }
