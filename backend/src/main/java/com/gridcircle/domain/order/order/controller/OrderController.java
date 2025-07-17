@@ -44,9 +44,17 @@ public class OrderController {
     @GetMapping("findOrder")
     @Transactional(readOnly = true)
     @Operation(summary = "주문 내역 조회 페이지 데이터 조회")
-    public List<OrderResponseDto> getOrderHistory(@AuthenticationPrincipal SecurityUser userDetails){
-        int memberId = userDetails.getId();
+    public List<OrderResponseDto> getOrderHistory(@AuthenticationPrincipal SecurityUser user){
+        int memberId = user.getId();
         return orderService.getOrderHistory(memberId);
+    }
+
+    // 주문 취소 요청
+    @PutMapping("/{orderId}/cancel")
+    @Transactional
+    @Operation(summary = "주문 취소 요청")
+    public void cancelOrder(@PathVariable int orderId, @AuthenticationPrincipal SecurityUser user){
+        orderService.cancelOrder(orderId, user.getId());
     }
 
 }

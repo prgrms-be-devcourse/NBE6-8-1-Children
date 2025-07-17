@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +104,18 @@ public class OrderService {
         List<Order> orders = orderRepository.findByMemberId(memberId);
         return orders.stream()
                 .map(OrderResponseDto::new)
-                .toList(); //주문 리스트를 dto리스트로 변환 (프론트에 응답 보내기 위해)
+                .toList(); //주문 리스트를 dto 리스트로 변환 (프론트에 응답 보내기 위해)
+    }
+
+    @Transactional
+    public void cancelOrder(int orderId, int memberId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+        // 추가로 본인 주문이 맞는지 체크 (혹시나해서)
+        if (order.getMember().getId() != memberId){
+            throw new IllegalArgumentException("본인 주문만 취소할 수 있습니다.");
+        }
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        //modifiedDate는 @LastModifiedDate에 의해 자동 갱신되므로 생략
     }
 }
