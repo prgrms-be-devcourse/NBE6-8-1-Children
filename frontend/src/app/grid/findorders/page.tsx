@@ -42,13 +42,15 @@ export default function FindOrdersPage() {
   const [orders, setOrders] = useState<OrderDto[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // 주문 내역을 불러오기 위한 GET 요청청
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
     try {
-      const response = await apiFetch("/api/orders/history") as OrderDto[];
+      // 서버로 GET 요청
+      const response = await apiFetch("/grid/orders/findOrder") as OrderDto[];
       setOrders(response);
     } catch (error) {
       console.error("주문 내역을 불러오는데 실패했습니다:", error);
@@ -69,22 +71,26 @@ export default function FindOrdersPage() {
     return orderDate >= yesterday2PM && orderDate <= today2PM;
   };
 
+  // 주문 취소 처리를 위한 로직직
   const handleCancelOrder = async (orderId: number) => {
-    if (!confirm("정말로 이 주문을 취소하시겠습니까?")) {
+    if (!confirm("해당 주문을 정말 취소하시겠습니까?")) {
       return;
     }
     try {
-      await apiFetch(`/api/orders/${orderId}/cancel`, {
+      // 사용자가 주문 취소버튼 클릭하면 서버로 PUT 요청
+      await apiFetch(`/grid/orders/${orderId}/cancel`, {
         method: "PUT"
       });
       await fetchOrders();
-      alert("주문이 성공적으로 취소되었습니다.");
+      alert("주문이 취소되었습니다."); // 주문 취소 시 팝업창 뜸. 사용자가 ok 버튼 누르면 팝업 닫히고, 갱신된 주문 내역이 화면에 보임임
     } catch (error) {
       console.error("주문 취소에 실패했습니다:", error);
       alert("주문 취소에 실패했습니다.");
     }
   };
 
+
+  // 날짜 포멧 함수 (25.07.17 12:42:00 형태로 화면에 보이기 위해)
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const year = date.getFullYear().toString().slice(-2);
@@ -96,6 +102,7 @@ export default function FindOrdersPage() {
     return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`;
   };
 
+  // orderStatus(주문상태)를 한글 텍스트로 변환.
   const getOrderStatusText = (status: OrderStatus): string => {
     switch (status) {
       case OrderStatus.ORDERED:
@@ -107,19 +114,15 @@ export default function FindOrdersPage() {
     }
   };
 
-  const getDeliveryStatusText = (status: DeliveryStatus): string => {
-    switch (status) {
-      case DeliveryStatus.BEFORE_DELIVERY:
-        return "배송 시작 전";
-      case DeliveryStatus.DELIVERY_STARTED:
-        return "배송 시작";
-      case DeliveryStatus.DELIVERED:
-        return "배송 완료";
-      default:
-        return status;
+  // deliveryStatus(배송상태)를 한글 텍스트로 변환.
+  const getDeliveryStatusText = (order: OrderDto): string => {
+    if (order.orderStatus === OrderStatus.CANCELLED) {
+      return "배송 불가"; // orderStatus가 CANCELLED(취소)되면 배송상태는 배송불가로 표기 
     }
+    return order.deliveryStatus ? "배송 시작" : "배송 시작 전"; // deliveryStatus가 true면 배송시작, false면 배송 시작 전전
   };
 
+  // 데이터 로딩 중에는 로딩중... 이라는 메시지 표시시
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -128,6 +131,7 @@ export default function FindOrdersPage() {
     );
   }
 
+  // 주문 내역 화면 렌더링링
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -141,33 +145,44 @@ export default function FindOrdersPage() {
             </div>
           ) : (
             <div className="space-y-8">
-              {orders.map((order: OrderDto) => (
-                <div key={order.id} className="border-b border-gray-200 pb-8 last:border-b-0">
-                  {/* 주문 그룹 헤더 */}
-                  <div className="mb-4">
-                    <div className="text-gray-800 mb-2">
-                      {formatDate(order.createdDate)}
+              {orders.map((order) => {
+                const isCancelled = order.orderStatus === OrderStatus.CANCELLED;
+                return (
+                  <div
+                    key={order.id}
+                    className={`rounded-lg p-6 mb-8 shadow-sm ${isCancelled ? "bg-gray-300" : "bg-[#f5f5fa]"}`}
+                  >
+                    <div className="flex flex-wrap justify-between items-center mb-2">
+                      <div className="font-semibold text-base flex items-center gap-2">
+                        {formatDate(order.createdDate)}
+                        {isCancelled && (
+                          <span className="ml-2 text-red-600 font-bold">취소된 주문</span>
+                        )}
+                      </div>
+                      <div className="flex gap-8 items-center">
+                        <span>
+                          <b>주문 상태 :</b> {getOrderStatusText(order.orderStatus)}
+                        </span>
+                        <span>
+                          <b>배송 상태 :</b> {getDeliveryStatusText(order)}
+                        </span>
+                        {!isCancelled && (
+                          <button
+                            className="border border-black px-4 py-1 rounded hover:bg-gray-100"
+                            onClick={() => handleCancelOrder(order.id)}
+                          >
+                            주문 취소
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-gray-800 mb-1">
-                      주소: {order.address}
-                    </div>
-                    <div className="text-gray-800 mb-1">
-                      주문 상태: {getOrderStatusText(order.orderStatus)}
-                    </div>
-                    <div className="text-gray-800 mb-4">
-                      배송 상태: {getDeliveryStatusText(order.deliveryStatus)}
-                    </div>
-                    <hr className="border-gray-300" />
-                  </div>
-                  {/* 주문 아이템들 */}
-                  <div className="space-y-4">
-                    {order.orderItems.map((item: OrderItemDto) => (
-                      <div
-                        key={item.id}
-                        className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-4"
-                      >
-                        {/* 상품 이미지 */}
-                        <div className="flex-shrink-0">
+                    <div className="mb-2 text-sm">주소 : {order.address}</div>
+                    <div className="space-y-4">
+                      {order.orderItems.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center bg-white border border-gray-300 rounded-lg p-4 gap-4"
+                        >
                           <Image
                             src={item.productImage}
                             alt={item.productName}
@@ -175,42 +190,23 @@ export default function FindOrdersPage() {
                             height={80}
                             className="rounded-lg object-cover"
                           />
-                        </div>
-                        {/* 상품 정보 */}
-                        <div className="flex-1">
-                          <div className="font-medium text-gray-800 mb-1">
-                            {item.productName}
+                          <div className="flex-1">
+                            <div className="font-bold text-lg">
+                              {item.productName}
+                            </div>
+                            <div className="text-gray-600 text-sm">
+                              {item.productPrice.toLocaleString()}원 / {item.orderCount}개
+                            </div>
+                            <div className="font-bold text-gray-800">
+                              {(item.productPrice * item.orderCount).toLocaleString()}원
+                            </div>
                           </div>
-                          <div className="text-gray-600 text-sm">
-                            {item.productPrice.toLocaleString()}원 / {item.orderCount}개
-                          </div>
-                          <div className="font-bold text-gray-800">
-                            {item.totalCount.toLocaleString()}원
-                          </div>
                         </div>
-                        {/* 액션 버튼 */}
-                        <div className="flex-shrink-0">
-                          {order.orderStatus === OrderStatus.ORDERED && canCancelOrder(order.createdDate) ? (
-                            <button
-                              onClick={() => handleCancelOrder(order.id)}
-                              className="px-4 py-2 border border-gray-400 rounded text-sm font-medium hover:bg-gray-50"
-                            >
-                              취소
-                            </button>
-                          ) : order.orderStatus === OrderStatus.CANCELLED ? (
-                            <button
-                              className="px-4 py-2 border border-gray-400 rounded text-sm font-medium bg-gray-100 text-gray-500 cursor-not-allowed"
-                              disabled
-                            >
-                              삭제
-                            </button>
-                          ) : null}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
