@@ -149,6 +149,40 @@ public class AdmMemberControllerTest {
                 .andExpect(jsonPath("$.data.price").value(product.getPrice()));
     }
 
+    @Test
+    @DisplayName("Admin - 상품 등록 실패 (유효성 검사)")
+    @WithUserDetails("admin@gmail.com")
+    void t9() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/grid/admin/createProduct")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "productName": "ss",
+                                            "description": "",
+                                            "productImage": "",
+                                            "price": 0,
+                                            "stock": -1
+                                        }
+                                        """.stripIndent())
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(AdmMemberController.class))
+                .andExpect(handler().methodName("createProduct"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.resultCode").value("400-1"))
+                .andExpect(jsonPath("$.msg").value("""
+                        description-NotBlank-must not be blank
+                        description-Size-상품 설명은 최소 5자 이상 100자 미만이어야 합니다.
+                        price-Min-상품 가격은 최소 1000원 이상 입니다.
+                        productImage-NotBlank-must not be blank
+                        stock-Min-상품 재고는 최소 2개 이상 1000개 미만이어야 합니다.
+                        """.stripIndent().trim()));
+    }
+
 
     @Test
     @DisplayName("Admin - 상품 수정")
