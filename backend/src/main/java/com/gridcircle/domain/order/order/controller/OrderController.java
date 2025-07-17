@@ -1,6 +1,5 @@
 package com.gridcircle.domain.order.order.controller;
 
-import com.gridcircle.domain.order.order.dto.OrderPageResponseDto;
 import com.gridcircle.domain.order.order.dto.OrderRequestDto;
 import com.gridcircle.domain.order.order.dto.OrderResponseDto;
 import com.gridcircle.domain.order.order.service.OrderService;
@@ -19,7 +18,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-
+/*
     // 주문 페이지 (장바구니에서 데이터 조회)
     @GetMapping("/basket/me")
     @Transactional(readOnly=true)
@@ -30,6 +29,7 @@ public class OrderController {
         int memberId = userDetails.getId(); //userDetails=현재 로그인한 사용자 정보가 담긴 객체에서, id값을 얻음
         return orderService.getOrderPageData(memberId);
     }
+ */ // 장바구니가 없어서 오류나는 부분 주석 처리
 
 
 
