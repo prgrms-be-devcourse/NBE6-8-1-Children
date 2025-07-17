@@ -30,6 +30,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/*/members/login", "/api/*/members/logout").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/members").permitAll()
                                 .requestMatchers("/grid/adm/**").permitAll()
+                                .requestMatchers("/grid/login").permitAll()
+                                .requestMatchers("/grid/logout").permitAll()
+
                                 //hasRole("ADMIN")
                                 .requestMatchers("/api/*/**").authenticated()
                                 .anyRequest().permitAll()
@@ -104,7 +107,7 @@ public class SecurityConfig {
         // CORS 설정을 소스에 등록
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", configuration);
-
+        source.registerCorsConfiguration("/grid/**", configuration);
         return source;
     }
 }
