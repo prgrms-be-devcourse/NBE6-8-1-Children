@@ -1,5 +1,7 @@
 package com.gridcircle.global.security;
 
+import com.gridcircle.global.rsData.RsData;
+import com.gridcircle.global.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +31,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/*/posts/{id:\\d+}", "/api/*/posts", "/api/*/posts/{postId:\\d+}/comments", "/api/*/posts/{postId:\\d+}/comments/{id:\\d+}").permitAll()
                                 .requestMatchers("/api/*/members/login", "/api/*/members/logout").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/*/members").permitAll()
-                                .requestMatchers("/grid/adm/**").permitAll()
                                 .requestMatchers("/grid/login").permitAll()
                                 .requestMatchers("/grid/logout").permitAll()
-
-                                //hasRole("ADMIN")
+                                .requestMatchers("/grid/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/*/**").authenticated()
                                 .anyRequest().permitAll()
                 )
@@ -47,7 +47,6 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(AbstractHttpConfigurer::disable);
-//
 //                .exceptionHandling(
 //                        exceptionHandling -> exceptionHandling
 //                                .authenticationEntryPoint(
