@@ -112,16 +112,18 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
       productId: product.id,
       productName: product.productName,
       productImage: product.productImage.split("|")[0], // 대표 이미지
-      orderCount: quantity,
+      productCount: quantity,
       productPrice: product.price,
     };
 
+
+
     // [1] 장바구니 테이블에 데이터 저장(POST 요청)
-    const res = await fetch("http://localhost:8080/grid/shoppingbasket", {
+    const res = await fetch("http://localhost:8080/grid/shoppingbasket/create", {
       method: "POST",
-      headers: { "Content-Type": "application/json"
-        // 인증이 필요하면 아래 Authorization 헤더 추가
-        // "Authorization": `Bearer ${accessToken}`, 
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`, 
       },
       body: JSON.stringify(cartData),
     });
