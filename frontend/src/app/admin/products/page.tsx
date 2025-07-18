@@ -19,9 +19,22 @@ export default function AdminProductsPage() {
   function fetchProducts() {
     setLoading(true);
     fetch("http://localhost:8080/grid/admin/products")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          // 에러 응답일 때, 메시지 파싱해서 throw
+          return res.json().then((errorData) => {
+            throw errorData;
+          });
+        }
+        return res.json();
+      })
       .then((data) => {
         setProducts(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        // 백엔드에서 내려준 에러 메시지 사용
+        alert(`${error.resultCode} : ${error.msg}`);
         setLoading(false);
       });
   }
@@ -43,20 +56,44 @@ export default function AdminProductsPage() {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }).then(() => {
-      setModalOpen(false);
-      setEditProduct(null);
-      fetchProducts();
-    });
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((errorData) => {
+            throw errorData;
+          });
+        }
+        return res.json();
+      })
+      .then(() => {
+        setModalOpen(false);
+        setEditProduct(null);
+        fetchProducts();
+      })
+      .catch((error) => {
+        alert(`${error.resultCode} : ${error.msg}`); // 백엔드 메시지 띄우기
+      });
   }
 
   function handleDelete(id: number) {
     fetch(`http://localhost:8080/grid/admin/product/${id}`, {
       method: "DELETE",
-    }).then(() => {
-      setDeleteId(null);
-      fetchProducts();
-    });
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((errorData) => {
+            throw errorData;
+          });
+        }
+        return res.json();
+      })
+      .then(() => {
+        setDeleteId(null);
+        fetchProducts();
+      })
+      .catch((error) => {
+        alert(`${error.resultCode} : ${error.msg}`);
+      });
   }
 
   return (
