@@ -74,10 +74,21 @@ export default function LoginPage() {
       }
   
       const result = await response.json();
+      const name = result.data.item.name;
+      const accessToken = result.data.accessToken;
+
+      // ✅ 로그인 상태 저장 (이름 + 로그인 여부)
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('name', name);
+
+      // ✅ accessToken 저장 방식: 유지 여부에 따라 다르게
+      if (keepLoggedIn) {
+        localStorage.setItem('accessToken', accessToken);
+      } else {
+        sessionStorage.setItem('accessToken', accessToken);
+      }
+      auth.login(result.data.item.name); // result.token이 실제 토큰 필드명인지 확인 필요
       console.log('로그인 성공:', result);
-      auth.login(() => {
-        router.push('/');
-      });
 
     } catch (err) {
       console.error('로그인 실패:', err);

@@ -167,14 +167,10 @@ export default function SignupPage() {
   
       const loginResult = await loginRes.json();
       console.log('로그인 성공:', loginResult);
-      auth.login(() => {
-        router.push('/');
-      });
+      auth.login(loginResult.data.item.name); // result.token이 실제 토큰 필드명인지 확인 필요
+
       alert(`${loginResult.data.item.name}님, 환영합니다!`);
   
-      // ✅ 로그인 후 라우팅 (예: 메인 페이지 또는 이전 페이지로)
-      // router.push('/main') 또는 router.back()
-      router.push('/');
     } catch (err) {
       console.error('에러 발생:', err);
       alert('회원가입 또는 로그인에 실패했습니다. 다시 시도해주세요.');
