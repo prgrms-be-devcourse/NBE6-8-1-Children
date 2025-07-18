@@ -6,20 +6,20 @@ import { useAuthContext } from "@/global/auth/hooks/useAuth";
 import Link from "next/link";
 
 export default function AdminMainPage() {
-  const { user, isLoggedIn } = useAuthContext();
+  const { isLoggedIn, role } = useAuthContext();
   const router = useRouter();
   const [showDenied, setShowDenied] = useState(false);
 
-  console.log("user 객체:", user);
-
   useEffect(() => {
-    if (!isLoggedIn || !user || user.role !== "admin") {
+    if (!isLoggedIn || role !== "ADMIN") {
       setShowDenied(true);
       const timer = setTimeout(() => {
         router.replace("/");
-      }, 100000);
+      }, 10000);
+    } else if (isLoggedIn && role == "ADMIN") {
+      setShowDenied(false);
     }
-  }, [isLoggedIn, user, router]);
+  }, [isLoggedIn, role, router]);
 
   if (showDenied) {
     return (
@@ -31,7 +31,7 @@ export default function AdminMainPage() {
     );
   }
 
-  if (!isLoggedIn || !user || user.role != "admin") {
+  if (!isLoggedIn || role !== "ADMIN") {
     return null;
   }
 

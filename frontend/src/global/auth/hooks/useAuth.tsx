@@ -12,7 +12,8 @@ import { useRouter } from "next/navigation";
 interface AuthContextType {
   isLoggedIn: boolean;
   name: string | null;
-  login: (name?: string, cb?: () => void) => void;
+  role: string | null;
+  login: (name?: string, role?: string, cb?: () => void) => void;
   logout: (cb?: () => void) => void;
 }
 
@@ -21,37 +22,35 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [name, setName] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const router = useRouter();
 
   // ✅ 새로고침 시 로그인 상태 유지
   useEffect(() => {
     const stored = localStorage.getItem("isLoggedIn");
     // console.log('초기 로그인 상태 (localStorage):', stored); // ✅ 확인용
-    const storedName = localStorage.getItem('name');
+    const storedName = localStorage.getItem("name");
+    const storedRole = localStorage.getItem("role");
 
-<<<<<<< HEAD
-    if (stored === 'true') setIsLoggedIn(true);
-    if (storedName) setName(storedName); // ✅ 이름 세팅
-=======
     if (stored === "true") setIsLoggedIn(true);
->>>>>>> 77417f5 (유저 정보 추가 전)
+    if (storedName) setName(storedName); // ✅ 이름 세팅
+    if (storedRole) setRole(storedRole);
   }, []);
 
-
   // ✅ 로그인 시 localStorage 저장
-  const login = (name?: string, cb?: () => void) => {
+  const login = (name?: string, role?: string, cb?: () => void) => {
     setIsLoggedIn(true);
-<<<<<<< HEAD
     console.log("이름 ", name);
     if (name) {
       setName(name);
-      localStorage.setItem('name', name);
+      localStorage.setItem("name", name);
     }
-    localStorage.setItem('isLoggedIn', 'true');
-    router.push('/');
-=======
+    if (role) {
+      setRole(role);
+      localStorage.setItem("role", role);
+    }
     localStorage.setItem("isLoggedIn", "true");
->>>>>>> 77417f5 (유저 정보 추가 전)
+    router.push("/");
     cb && cb();
   };
 
@@ -63,13 +62,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: "include",
       });
       setIsLoggedIn(false);
-<<<<<<< HEAD
       setName(null);
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('name');
-=======
+      setRole(null);
       localStorage.removeItem("isLoggedIn");
->>>>>>> 77417f5 (유저 정보 추가 전)
+      localStorage.removeItem("name");
+      localStorage.removeItem("role");
       cb && cb();
       alert("로그아웃 되었습니다.");
     } catch (e) {
@@ -78,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, name, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, name, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
