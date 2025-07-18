@@ -1,8 +1,8 @@
 package com.gridcircle.global.initData;
 
 import com.gridcircle.domain.member.member.entity.Member;
-import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.member.member.service.MemberService;
+import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,8 @@ public class BaseInitData {
     private BaseInitData self;
     private final MemberService memberService;
     private final ProductService productService;
+
+
 
     @Bean
     ApplicationRunner baseInitDataApplicationRunner() {

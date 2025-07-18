@@ -48,7 +48,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private void work(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // API 요청이 아니라면 패스
-        if (!request.getRequestURI().startsWith("/api/")) {
+        if (!request.getRequestURI().startsWith("/grid/admin/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -96,9 +96,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
             if (payload != null) {
                 int id = (int) payload.get("id");
-                String username = (String) payload.get("username");
+                String email = (String) payload.get("email");
                 String name = (String) payload.get("name");
-                member = new Member(id, username, name);
+                member = new Member(id, email, name);
 
                 isAccessTokenValid = true;
             }

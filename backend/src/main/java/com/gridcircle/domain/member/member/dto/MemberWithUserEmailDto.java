@@ -8,8 +8,10 @@ public record MemberWithUserEmailDto(
         String name,
         String email,
         String address,
+        String role,
         LocalDateTime createdDate,
         LocalDateTime modifiedDate
+
 ) {
     public MemberWithUserEmailDto(Member member) {
         this(
@@ -17,8 +19,10 @@ public record MemberWithUserEmailDto(
                 member.getName(),
                 member.getEmail(),
                 member.getAddress(),
+                member.getRole(),
                 member.getCreatedDate(),
                 member.getModifiedDate()
+
         );
     }
 }

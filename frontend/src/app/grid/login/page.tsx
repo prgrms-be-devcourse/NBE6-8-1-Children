@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; 
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/global/auth/hooks/useAuth";
 
 export default function LoginPage() {
   const router = useRouter();
   const auth = useAuthContext();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -20,18 +20,18 @@ export default function LoginPage() {
   };
 
   const validateField = (name: string, value: string) => {
-    let error = '';
+    let error = "";
     switch (name) {
-      case 'email':
+      case "email":
         if (!value) {
-          error = '이메일을 입력해주세요.';
+          error = "이메일을 입력해주세요.";
         } else if (!isValidEmail(value)) {
-          error = '유효한 이메일 형식이 아닙니다.';
+          error = "유효한 이메일 형식이 아닙니다.";
         }
         break;
-      case 'password':
+      case "password":
         if (!value) {
-          error = '비밀번호를 입력해주세요.';
+          error = "비밀번호를 입력해주세요.";
         }
         break;
     }
@@ -43,55 +43,56 @@ export default function LoginPage() {
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     const error = validateField(name, value);
     setErrors((prev) => ({
       ...prev,
-      [name]: error
+      [name]: error,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     try {
-      const response = await fetch('http://localhost:8080/grid/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/grid/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
         }),
-        credentials: 'include', // 필요한 경우
+        credentials: "include", // 필요한 경우
       });
-  
+
       if (!response.ok) {
-        throw new Error('로그인 실패');
+        throw new Error("로그인 실패");
       }
-  
+
       const result = await response.json();
       const name = result.data.item.name;
+      const role = result.data.item.role;
       const accessToken = result.data.accessToken;
 
       // ✅ 로그인 상태 저장 (이름 + 로그인 여부)
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('name', name);
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("name", name);
+      localStorage.setItem("role", role);
 
       // ✅ accessToken 저장 방식: 유지 여부에 따라 다르게
       if (keepLoggedIn) {
-        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem("accessToken", accessToken);
       } else {
-        sessionStorage.setItem('accessToken', accessToken);
+        sessionStorage.setItem("accessToken", accessToken);
       }
-      auth.login(result.data.item.name); // result.token이 실제 토큰 필드명인지 확인 필요
-      console.log('로그인 성공:', result);
-
+      auth.login(name, role); // result.token이 실제 토큰 필드명인지 확인 필요
+      console.log("로그인 성공:", result);
     } catch (err) {
-      console.error('로그인 실패:', err);
+      console.error("로그인 실패:", err);
     }
   };
 
@@ -102,7 +103,10 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* 이메일 */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 이메일
               </label>
               <input
@@ -112,7 +116,7 @@ export default function LoginPage() {
                 value={formData.email}
                 onChange={handleInputChange}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                  errors.email ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="이메일을 입력하세요"
               />
@@ -123,7 +127,10 @@ export default function LoginPage() {
 
             {/* 비밀번호 */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 비밀번호
               </label>
               <input
@@ -133,7 +140,7 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={handleInputChange}
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
+                  errors.password ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="비밀번호를 입력하세요"
               />
@@ -151,7 +158,10 @@ export default function LoginPage() {
                 onChange={(e) => setKeepLoggedIn(e.target.checked)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="keepLoggedIn" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="keepLoggedIn"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 로그인 상태 유지
               </label>
             </div>

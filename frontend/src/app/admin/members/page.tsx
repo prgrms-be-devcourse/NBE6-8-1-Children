@@ -8,7 +8,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     // 실제 백엔드 API 주소로 변경 필요
-    fetch("http://localhost:8080/gird/admin/members")
+    fetch("http://localhost:8080/grid/admin/members")
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
@@ -25,19 +25,19 @@ export default function AdminUsersPage() {
         <table className="w-full bg-white rounded shadow">
           <thead>
             <tr className="bg-gray-100">
-              <th className="py-2 px-4">ID</th>
-              <th className="py-2 px-4">이름</th>
-              <th className="py-2 px-4">이메일</th>
-              <th className="py-2 px-4">권한</th>
+              <th className="py-2 px-4 text-left">ID</th>
+              <th className="py-2 px-4 text-left">이름</th>
+              <th className="py-2 px-4 text-left">이메일</th>
+              <th className="py-2 px-4 text-left">주소</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user.id} className="border-t">
-                <td className="py-2 px-4">{user.id}</td>
-                <td className="py-2 px-4">{user.name}</td>
-                <td className="py-2 px-4">{user.email}</td>
-                <td className="py-2 px-4">{user.role}</td>
+                <td className="py-2 px-4 text-left">{user.id}</td>
+                <td className="py-2 px-4 text-left">{user.name}</td>
+                <td className="py-2 px-4 text-left">{user.email}</td>
+                <td className="py-2 px-4 text-left">{user.address}</td>
               </tr>
             ))}
           </tbody>

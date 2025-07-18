@@ -1,7 +1,5 @@
 package com.gridcircle.global.security;
 
-import com.gridcircle.global.rsData.RsData;
-import com.gridcircle.global.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -20,7 +17,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    private final CustomAuthenticationFilter customAuthenticationFilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -33,7 +30,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/members").permitAll()
                                 .requestMatchers("/grid/login").permitAll()
                                 .requestMatchers("/grid/logout").permitAll()
-                                .requestMatchers("/grid/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/grid/admin**").hasRole("ADMIN")
                                 .requestMatchers("/api/*/**").authenticated()
                                 .anyRequest().permitAll()
                 )
@@ -46,7 +43,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement(AbstractHttpConfigurer::disable);
+                .sessionManagement(AbstractHttpConfigurer::disable)
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //                .exceptionHandling(
 //                        exceptionHandling -> exceptionHandling
 //                                .authenticationEntryPoint(
@@ -84,10 +82,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {

@@ -19,11 +19,12 @@ public class AuthTokenService {
         long id = member.getId();
         String email = member.getEmail();
         String name = member.getName();
+        String role = member.getRole();
 
         return Ut.jwt.toString(
                 jwtSecretKey,
                 accessTokenExpirationSeconds,
-                Map.of("id", id, "email", email, "name", name)
+                Map.of("id", id, "email", email, "name", name , "role", role)
         );
     }
 
@@ -33,9 +34,9 @@ public class AuthTokenService {
         if (parsedPayload == null) return null;
 
         int id = (int) parsedPayload.get("id");
-        String username = (String) parsedPayload.get("username");
+        String email = (String) parsedPayload.get("email");
         String name = (String) parsedPayload.get("name");
 
-        return Map.of("id", id, "username", username, "name", name);
+        return Map.of("id", id, "email", email, "name", name);
     }
 }

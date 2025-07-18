@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useAuthContext } from "@/global/auth/hooks/useAuth";
@@ -13,10 +13,10 @@ export default function Header() {
     setLoggedIn(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
-  console.log("auth : ",auth);
+  console.log("auth : ", auth);
   const handleLogout = () => {
     auth.logout(() => {
-      window.location.href = "/";  // 이게 가장 확실함
+      window.location.href = "/"; // 이게 가장 확실함
     });
   };
 
@@ -32,25 +32,25 @@ export default function Header() {
       {/* Navigation */}
       <nav className="flex gap-8 text-base font-medium">
         <Link href="/" className="text-black hover:font-bold">
-        Home
+          Home
         </Link>
         <Link href="/#products" className="text-gray-500 hover:text-black">
-        Products
+          Products
         </Link>
         <Link href="/#about" className="text-gray-500 hover:text-black">
-        Contacts
+          Contacts
         </Link>
-    </nav>
-    {/* Actions */}
-    <div className="flex items-center gap-4">
-    {!auth.isLoggedIn && (
-  <Link href="/grid/signup">
-    <button className="px-4 py-1 border rounded-full text-sm font-medium border-gray-400 hover:bg-gray-100">
-      signup
-    </button>
-  </Link>
-)}
-    <button
+      </nav>
+      {/* Actions */}
+      <div className="flex items-center gap-4">
+        {!auth.isLoggedIn && (
+          <Link href="/grid/signup">
+            <button className="px-4 py-1 border rounded-full text-sm font-medium border-gray-400 hover:bg-gray-100">
+              signup
+            </button>
+          </Link>
+        )}
+        <button
           onClick={auth.isLoggedIn ? handleLogout : handleLogin}
           className="px-4 py-1 rounded-full text-sm font-medium bg-black text-white hover:bg-gray-800"
         >
@@ -58,15 +58,17 @@ export default function Header() {
         </button>
 
         <span className="ml-4 text-xl cursor-pointer" title="Cart">
-        🛒
+          🛒
         </span>
-        <span className="ml-2 text-xl cursor-pointer" title="User">
-        👤
-        </span>
+        <Link href="/grid/findorders">
+          <span className="ml-2 text-xl cursor-pointer" title="User">
+            👤
+          </span>
+        </Link>
         <span className="ml-2 text-base font-medium flex items-center h-6">
-        {auth.name}
-      </span>
-    </div>
+          {auth.name}
+        </span>
+      </div>
     </header>
   );
 }

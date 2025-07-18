@@ -58,32 +58,34 @@ export default function Home() {
       {/* Products Section */}
       <section id="products" className="w-full text-black">
         <h3 className="text-xl font-bold mb-6 text-black">PRODUCTS</h3>
-        <div className="flex flex-wrap gap-8 justify-around">
-          {products.map((product) => {
-            // productImage를 배열로 변환
-            const imageArray = product.productImage.split("|");
-            return (
-              <Link
-                key={product.id}
-                href={`grid/products/${product.id}`}
-                className="flex flex-col items-center w-48 cursor-pointer hover:scale-105 transition-transform"
-              >
-                <Image
-                  src={imageArray[0]} // 첫 번째 이미지를 사용
-                  alt={product.productName}
-                  width={300}
-                  height={200}
-                  className="rounded-lg object-cover mb-4"
-                />
-                <div className="font-medium text-black">
-                  {product.productName}
-                </div>
-                <div className="text-gray-800 text-sm">
-                  ₩ {product.price.toLocaleString()}
-                </div>
-              </Link>
-            );
-          })}
+        <div className="overflow-x-auto overflow-y-hidden">
+          <div className="flex gap-16 py-2">
+            {products.map((product) => {
+              // productImage를 배열로 변환
+              const imageArray = product.productImage.split("|");
+              return (
+                <Link
+                  key={product.id}
+                  href={`grid/products/${product.id}`}
+                  className="flex flex-col items-center w-48 cursor-pointer hover:scale-105 transition-transform flex-shrink-0"
+                >
+                  <Image
+                    src={imageArray[0]}
+                    alt={product.productName}
+                    width={300}
+                    height={200}
+                    className="rounded-lg object-cover mb-4"
+                  />
+                  <div className="font-medium text-black">
+                    {product.productName}
+                  </div>
+                  <div className="text-gray-800 text-sm">
+                    ₩ {product.price.toLocaleString()}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
 
