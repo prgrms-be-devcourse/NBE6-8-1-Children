@@ -45,7 +45,7 @@ export default function Home() {
         {/* Right: Hero Image */}
         <div className="flex-1 flex justify-center">
           <Image
-            src="/main/main_coffee.jpg" // public 폴더에 coffee.jpg 추가 필요
+            src="https://i.postimg.cc/9fd1jvcP/main-Coffee.webp" // public 폴더에 coffee.jpg 추가 필요
             alt="Coffee beans"
             width={450}
             height={260}

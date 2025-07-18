@@ -103,9 +103,10 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
     }
   };
 
+  // 장바구니 담기 버튼 클릭 시 실행되는 함수
   const handleAddToCart = async () => {
-    // 예시: 멤버ID는 로그인 상태에서 받아온다고 가정
-
+    
+    // 장바구니에 담을 데이터 준비
     const cartData = {
       memberId,
       productId: product.id,
@@ -115,28 +116,24 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
       productPrice: product.price,
     };
 
-    // POST 요청
+    // [1] 장바구니 테이블에 데이터 저장(POST 요청)
     const res = await fetch("http://localhost:8080/grid/shoppingbasket", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json"
+        // 인증이 필요하면 아래 Authorization 헤더 추가
+        // "Authorization": `Bearer ${accessToken}`, 
+      },
       body: JSON.stringify(cartData),
     });
 
     if (res.ok) {
+      // [2] 팝업 띄우기
       setShowPopup(true);
     } else {
       alert("장바구니 담기에 실패했습니다.");
     }
   };
 
-  const handleConfirm = () => {
-    setShowPopup(false);
-    router.push(`/grid/shoppingbasket/${product.id}?quantity=${quantity}`);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
 
   // 페이지 프론트 부분
   return (
@@ -182,6 +179,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
               <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-600 hover:bg-yellow-700 text-white">-</button>
               <span className="font-bold text-3xl">{quantity}</span>
               <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-600 hover:bg-yellow-700 text-white">+</button>
+              {/* 장바구니 버튼 클릭 이벤트 */}
               <button
                 className="ml-8 px-10 py-4 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold shadow-lg text-2xl transition"
                 onClick={handleAddToCart}
@@ -234,10 +232,11 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <div className="mb-6 text-lg font-semibold">
               상품 {quantity}개를 장바구니에 담았습니다.
             </div>
+            {/* [3] 장바구니 페이지로 이동하는 버튼 */}
             <button
               onClick={() => {
-                setShowPopup(false);
-                router.push(`/grid/shoppingbasket/${memberId}`);
+                setShowPopup(false); // 팝업 닫기
+                router.push(`/grid/shoppingbasket/${memberId}`); // 장바구니 페이지로 이동
               }}
               className="px-6 py-2 bg-yellow-600 text-white rounded-lg font-bold hover:bg-yellow-700"
             >
