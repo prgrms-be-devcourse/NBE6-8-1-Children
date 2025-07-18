@@ -51,13 +51,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-//    product,
-//            reqBody.productName(),
-//            reqBody.description(),
-//            reqBody.productImage(),
-//            reqBody.price(),
-//            reqBody.stock()
-
 
     public void update(Product product, String productName, String description, String productImage, int price, int stock) {
         product.update(

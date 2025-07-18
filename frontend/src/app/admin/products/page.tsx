@@ -81,6 +81,7 @@ export default function AdminProductsPage() {
             <tr className="bg-gray-100">
               <th className="py-2 px-4 text-center w-16">ID</th>
               <th className="py-2 px-4 text-left">상품명</th>
+              <th className="py-2 px-4 text-left">상품 설명</th>
               <th className="py-2 px-4 text-right w-32">가격</th>
               <th className="py-2 px-4 text-right w-32">재고</th>
               <th className="py-2 px-4 text-center w-32">관리</th>
@@ -91,6 +92,7 @@ export default function AdminProductsPage() {
               <tr key={product.id} className="border-t">
                 <td className="py-2 px-4 text-center">{product.id}</td>
                 <td className="py-2 px-4 text-left">{product.productName}</td>
+                <td className="py-2 px-4 text-left">{product.description}</td>
                 <td className="py-2 px-4 text-right">{product.price}</td>
                 <td className="py-2 px-4 text-right">{product.stock}</td>
                 <td className="py-2 px-4 text-center flex gap-2">

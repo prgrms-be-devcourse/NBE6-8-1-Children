@@ -162,7 +162,6 @@ public class AdmMemberController {
     }
 
     @DeleteMapping("/product/{id}")
-    @Transactional(readOnly = true)
     @Operation(summary = "Admin - 상품 삭제")
     public RsData<Void> delete(@PathVariable int id) {
         productService.delete(id);

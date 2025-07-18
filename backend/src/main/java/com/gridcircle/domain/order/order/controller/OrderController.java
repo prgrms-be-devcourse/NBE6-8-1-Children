@@ -55,7 +55,7 @@ public class OrderController {
     @PutMapping("/{orderId}/cancel")
     @Transactional
     @Operation(summary = "주문 취소 요청")
-    public void cancelOrder(@PathVariable int orderId, @AuthenticationPrincipal SecurityUser user){
+    public void cancelOrder(@PathVariable int orderId, @AuthenticationPrincipal SecurityUser user) {
         orderService.cancelOrder(orderId, user.getId());
     }
 
