@@ -1,6 +1,40 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/global/auth/hooks/useAuth";
+
 import Link from "next/link";
 
 export default function AdminMainPage() {
+  const { user, isLoggedIn } = useAuthContext();
+  const router = useRouter();
+  const [showDenied, setShowDenied] = useState(false);
+
+  console.log("user 객체:", user);
+
+  useEffect(() => {
+    if (!isLoggedIn || !user || user.role !== "admin") {
+      setShowDenied(true);
+      const timer = setTimeout(() => {
+        router.replace("/");
+      }, 100000);
+    }
+  }, [isLoggedIn, user, router]);
+
+  if (showDenied) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-xl font-bold text-red-600">
+          권한이 없는 사용자입니다.
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoggedIn || !user || user.role != "admin") {
+    return null;
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div>
