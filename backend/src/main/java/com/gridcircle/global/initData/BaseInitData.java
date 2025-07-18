@@ -4,7 +4,6 @@ import com.gridcircle.domain.member.member.entity.Member;
 import com.gridcircle.domain.member.member.service.MemberService;
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.service.ProductService;
-import com.gridcircle.domain.shoppingbasket.shoppingbasket.entity.ShoppingBasket;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.service.ShoppingBasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
