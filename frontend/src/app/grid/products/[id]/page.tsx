@@ -119,11 +119,12 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
 
 
     // [1] 장바구니 테이블에 데이터 저장(POST 요청)
-    const res = await fetch("http://localhost:8080/grid/shoppingbasket/create", {
+    const res = await fetch("http://localhost:8080/grid/shoppingbasket/create",{
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`, 
+        // "Authorization": `Bearer ${accessToken}`, 
       },
       body: JSON.stringify(cartData),
     });
