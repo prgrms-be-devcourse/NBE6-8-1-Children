@@ -13,7 +13,7 @@ export default function Header() {
     setLoggedIn(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
-  // console.log("auth : "+auth.isLoggedIn);
+  console.log("auth : ",auth);
   const handleLogout = () => {
     auth.logout(() => {
       window.location.href = "/";  // 이게 가장 확실함
@@ -43,11 +43,13 @@ export default function Header() {
     </nav>
     {/* Actions */}
     <div className="flex items-center gap-4">
-    <Link href="/grid/signup">
-  <button className="px-4 py-1 border rounded-full text-sm font-medium border-gray-400 hover:bg-gray-100">
-    signup
-  </button>
-</Link>
+    {!auth.isLoggedIn && (
+  <Link href="/grid/signup">
+    <button className="px-4 py-1 border rounded-full text-sm font-medium border-gray-400 hover:bg-gray-100">
+      signup
+    </button>
+  </Link>
+)}
     <button
           onClick={auth.isLoggedIn ? handleLogout : handleLogin}
           className="px-4 py-1 rounded-full text-sm font-medium bg-black text-white hover:bg-gray-800"
@@ -61,6 +63,9 @@ export default function Header() {
         <span className="ml-2 text-xl cursor-pointer" title="User">
         👤
         </span>
+        <span className="ml-2 text-base font-medium flex items-center h-6">
+        {auth.name}
+      </span>
     </div>
     </header>
   );
