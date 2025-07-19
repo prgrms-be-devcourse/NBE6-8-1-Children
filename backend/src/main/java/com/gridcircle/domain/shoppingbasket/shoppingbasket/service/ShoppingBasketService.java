@@ -7,8 +7,6 @@ import com.gridcircle.domain.product.product.repository.ProductRepository;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.dto.ShoppingBasketRequestDto;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.dto.ShoppingBasketResponseDto;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.entity.ShoppingBasket;
-import com.gridcircle.domain.shoppingbasket.shoppingbasket.entity.ShoppingBasketItem;
-import com.gridcircle.domain.shoppingbasket.shoppingbasket.repository.ShoppingBasketItemRepository;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.repository.ShoppingBasketRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -21,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShoppingBasketService {
     private final ShoppingBasketRepository shoppingBasketRepository;
-    private final ShoppingBasketItemRepository shoppingBasketItemRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
 
@@ -53,15 +50,21 @@ public class ShoppingBasketService {
                     .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
             // 장바구니에 담긴 아이템 조회
-            List<ShoppingBasketItem> items = shoppingBasketItemRepository.findAllByMember(member);
+            List<ShoppingBasket> baskets = shoppingBasketRepository.findByMemberId(memberId);
 
-            return items.stream()
-                    .map(item -> new ShoppingBasketResponseDto(
-                            item.getProductName(),
-                            item.getProductImage(),
-                            item.getProductCount(),
-                            item.getProductPrice()
-                    ))
+            // ShoppingBasket에서 productId로 Product를 조회해서 필요한 정보를 DTO에 담아줌
+            return baskets.stream()
+                    .map(basket -> {
+                        // 각 장바구니 row의 productId로 Product 정보 조회
+                        Product product = productRepository.findById(basket.getProduct().getId())
+                                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+                        return new ShoppingBasketResponseDto(
+                                product.getProductName(),
+                                product.getProductImage(),
+                                basket.getProductCount(),
+                                product.getPrice()
+                        );
+                    })
                     .toList();
         }
 }
