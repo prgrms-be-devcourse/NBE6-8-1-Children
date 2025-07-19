@@ -24,7 +24,7 @@ public class ProductController {
         return new ProductDto(product);
     }
 
-    @GetMapping
+    @GetMapping()
     @Transactional(readOnly = true)
     @Operation(summary = "다건 조회")
     public List<ProductDto> getItems() {

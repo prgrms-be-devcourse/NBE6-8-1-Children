@@ -5,12 +5,15 @@ import com.gridcircle.domain.member.member.repository.MemberRepository;
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.repository.ProductRepository;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.dto.ShoppingBasketRequestDto;
+import com.gridcircle.domain.shoppingbasket.shoppingbasket.dto.ShoppingBasketResponseDto;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.entity.ShoppingBasket;
 import com.gridcircle.domain.shoppingbasket.shoppingbasket.repository.ShoppingBasketRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,33 +42,46 @@ public class ShoppingBasketService {
         shoppingBasketRepository.save(shoppingBasket);
     }
 
-//    // 상세페이지에 있는 데이터 + 사용자 주소를 장바구니로 보내는 dto 생성 (get)
-//    @Transactional(readOnly = true)
-//    public ShoppingBasketResponseDto getShoppingBasketData(int memberId) {
-//        // 로그인 중인 member 조회
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(()->new IllegalArgumentException("로그인 또는 회원가입을 진행해주세요"));
-//
-//        // 현재 로그인중인 member의 상세페이지 정보를 모아서 객체에 저장
-//        List<>
-//    }
+    // 장바구니에 담긴 아이템을 조회하는 메서드 (Get)
+    @Transactional(readOnly=true)
+    public List<ShoppingBasketResponseDto> getShoppingBasket(int memberId) {
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
+        // 장바구니에 담긴 아이템 조회
+        List<ShoppingBasket> baskets = shoppingBasketRepository.findByMemberId(memberId);
 
-//    // 장바구니 다건 조회 (get)
-//    @Transactional
-//    public List<ShoppingBasketDto> getShoppingBasket(int memberId) {
-//        // memberId로 장바구니 조회
-//        List<ShoppingBasket> shoppingBaskets = shoppingBasketRepository.findByMemberId(memberId);
-//
-//        // 장바구니가 비어있으면 예외 처리
-//        if (shoppingBaskets.isEmpty()) {
-//            throw new IllegalArgumentException("장바구니가 비어 있습니다.");
-//        }
-//
-//        return shoppingBaskets.stream()
-//                .map(ShoppingBasketDto::new) // ShoppingBasketDto로 변환
-//                .toList(); // 주문 리스트를 dto 리스트로 변환
-//    }
+        // ShoppingBasket에서 productId로 Product를 조회해서 필요한 정보를 DTO에 담아줌
+        return baskets.stream()
+                .map(basket -> {
+                    // 각 장바구니 row의 productId로 Product 정보 조회
+                    Product product = productRepository.findById(basket.getProduct().getId())
+                            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+                    return new ShoppingBasketResponseDto(
+                            basket.getId(), // 장바구니 아이템 ID
+                            product.getProductName(),
+                            product.getProductImage(),
+                            basket.getProductCount(),
+                            product.getPrice()
+                    );
+                })
+                .toList();
+    }
 
+    // 장바구니 아이템 삭제 메서드 (Delete)
+    @Transactional
+    public void deleteShoppingBasket(int id, int memberId) {
+        // 장바구니 아이템 조회
+        ShoppingBasket shoppingBasket = shoppingBasketRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("장바구니 아이템이 존재하지 않습니다."));
+
+        // 해당 아이템의 회원 ID가 요청한 회원 ID와 일치하는지 확인
+        if (shoppingBasket.getMember().getId() != memberId) {
+            throw new IllegalArgumentException("해당 장바구니 아이템을 삭제할 권한이 없습니다.");
+        }
+
+        // 장바구니 아이템 삭제
+        shoppingBasketRepository.delete(shoppingBasket);
+    }
 }
