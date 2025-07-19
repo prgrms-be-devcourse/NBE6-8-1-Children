@@ -50,7 +50,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id: idStr } = use(params);
   const id = parseInt(idStr);
   const productState = useProduct(id);
-  const memberId = 1 // 임시
 
   return (
     <>
@@ -62,7 +61,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 // 상품 상세 정보 및 UI를 렌더링
 // 페이지 프론트 부분
 function ProductInfo({ productState }: { productState: { product: ProductDto | null } }) {
-  const memberId = 1; // 임시로 1, 실제론 로그인 정보에서 받아와야 함
+  
   // 데이터 로딩 중 처리
   if (!productState || productState.product == null) return <div>로딩중...</div>;
   const { product } = productState;
@@ -94,7 +93,8 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
   };
 
   const router = useRouter();
-  const currentId = Number(product.id);
+  // 제품 id 
+  const productId = Number(product.id);
 
   // 페이지 이동 함수
   const goToProduct = (newId: number) => {
@@ -108,8 +108,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
     
     // 장바구니에 담을 데이터 준비
     const cartData = {
-      memberId,
-      productId: product.id,
+      productId: productId,
       productName: product.productName,
       productImage: product.productImage.split("|")[0], // 대표 이미지
       productCount: quantity,
@@ -124,7 +123,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        // "Authorization": `Bearer ${accessToken}`, 
+        //"Authorization": `Bearer 7a0d7432-156f-4cd8-a943-d42a75610a4a eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiLslpHtmITspIAiLCJlbWFpbCI6ImFkbWluMkBnbWFpbC5jb20iLCJpZCI6MywiaWF0IjoxNzUyODIwODE5LCJleHAiOjE3NTI4MjIwMTl9.gDP2iR4k-FiSxOE3DWw0fXacFesAdwFHDvgrbX2ErDe38lSgFws0twSfX1lBKqbqZp1jQXghkMnx1MNQwCcxjw`, 
       },
       body: JSON.stringify(cartData),
     });
@@ -205,16 +204,16 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
         {/* 최하단: 커피 페이지 이동 */}
         <div className="flex justify-center items-center gap-8 mt-10">
           <button
-            onClick={() => goToProduct(currentId - 1)}
+            onClick={() => goToProduct(productId - 1)}
             className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition text-white"
             aria-label="이전 커피"
-            disabled={currentId <= 1}
+            disabled={productId <= 1}
           >
             &#8592;
           </button>
           <span className="text-xl font-bold text-gray-700">다른 커피 보기</span>
           <button
-            onClick={() => goToProduct(currentId + 1)}
+            onClick={() => goToProduct(productId + 1)}
             className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition text-white"
             aria-label="다음 커피"
           >
@@ -239,7 +238,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <button
               onClick={() => {
                 setShowPopup(false); // 팝업 닫기
-                router.push(`/grid/shoppingbasket/${memberId}`); // 장바구니 페이지로 이동
+                router.push(`/grid/shoppingbasket`); // 장바구니 페이지로 이동
               }}
               className="px-6 py-2 bg-yellow-600 text-white rounded-lg font-bold hover:bg-yellow-700"
             >
