@@ -32,10 +32,15 @@ export default function OrderPage() {
         setItems(res.items); // 서버가 보낸 응답데이터에서 items 추출(커피관련정보)
       })
       .catch(err => {
-        if (err.message?.toLowerCase().includes("forbidden") || err.status === 403 || err.message?.toLowerCase().includes("unauthorized") || err.status === 401) {
-          alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
-          // 필요하다면 로그인 페이지로 이동
-          // router.push('/grid/login');
+        if (
+          err.message?.toLowerCase().includes("forbidden") ||
+          err.status === 403 ||
+          err.message?.toLowerCase().includes("unauthorized") ||
+          err.status === 401
+        ) {
+          if (window.confirm("로그인이 후 이용해주세요. 로그인 페이지로 이동합니다.")) {
+            router.push('/grid/login');
+          }
           return;
         }
         if (err.message === "Failed to fetch" || err.message === "NetworkError when attempting to fetch resource.") {
@@ -44,7 +49,7 @@ export default function OrderPage() {
         }
         alert('주문 데이터 불러오기 실패: ' + err.message);
       });
-  }, []);
+  }, [router]);
 
   // 총 금액 계산
   const getTotal = () => items.reduce((sum, item) => sum + item.productPrice * item.orderCount, 0);
@@ -52,7 +57,7 @@ export default function OrderPage() {
   // 결제하기 버튼 클릭 시 서버로 POST 요청될 주문페이지의 모든 데이터들
   const handleOrder = () => {
     if (items.length === 0) {
-      alert("장바구니에 상품이 없습니다. 먼저 장바구니에 상품을 담아주세요.");
+      alert("장바구니에 상품이 없습니다. 먼저 상품을 장바구니에 담아주세요.");
       return;
     }
     const orderPayload = { // 서버로 보낼 orderPayload 객체 생성

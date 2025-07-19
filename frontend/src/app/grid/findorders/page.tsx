@@ -3,6 +3,7 @@
 import { apiFetch } from "@/lib/backend/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 
 // 주문 상태 enum
 enum OrderStatus {
@@ -34,19 +35,35 @@ interface OrderDto {
 export default function FindOrdersPage() {
   const [orders, setOrders] = useState<OrderDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // 주문 내역을 불러오기 위한 GET 요청청
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [router]);
 
   const fetchOrders = async () => {
     try {
       // 서버로 GET 요청
       const response = await apiFetch("/grid/orders/findOrder") as OrderDto[];
       setOrders(response);
-    } catch (error) {
-      console.error("주문 내역을 불러오는데 실패했습니다:", error);
+    } catch (error: any) {
+      if (
+        error.message?.toLowerCase().includes("forbidden") ||
+        error.status === 403 ||
+        error.message?.toLowerCase().includes("unauthorized") ||
+        error.status === 401
+      ) {
+        if (window.confirm("로그인 후 이용해주세요. 로그인 페이지로 이동합니다.")) {
+          router.push('/grid/login');
+        }
+        return;
+      }
+      if (error.message === "Failed to fetch" || error.message === "NetworkError when attempting to fetch resource.") {
+        alert("네트워크 연결에 문제가 있습니다. 인터넷 상태를 확인해주세요.");
+        return;
+      }
+      alert("주문 내역을 불러오는데 실패했습니다: " + error.message);
     } finally {
       setLoading(false);
     }
