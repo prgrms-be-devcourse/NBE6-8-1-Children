@@ -35,6 +35,14 @@ public class ShoppingBasketController {
         int memberId = userDetails.getId(); // 현재 로그인한 사용자의 id를 가져옴
         return shoppingBasketService.getShoppingBasket(memberId);
     }
+
+    // 장바구니 삭제 요청
+    @DeleteMapping("/{id}")
+    @Transactional
+    @Operation(summary = "장바구니 삭제")
+    public void deleteShoppingBasket(@PathVariable int id, @AuthenticationPrincipal SecurityUser userDetails) {
+        shoppingBasketService.deleteShoppingBasket(id, userDetails.getId());
+    }
 }
 
 

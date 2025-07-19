@@ -57,14 +57,34 @@ export default function Header() {
           {auth.isLoggedIn ? "logout" : "login"}
         </button>
 
-        <span className="ml-4 text-xl cursor-pointer" title="Cart">
+        {/* 장바구니 버튼 */}
+        <span
+          className="ml-4 text-xl cursor-pointer"
+          title="Cart"
+          onClick={() => {
+            if (!auth.isLoggedIn) {
+              router.push("/grid/login");
+            } else {
+              router.push("/grid/shoppingbasket");
+            }
+          }}
+        >
           🛒
         </span>
-        <Link href="/grid/findorders">
-          <span className="ml-2 text-xl cursor-pointer" title="User">
-            👤
-          </span>
-        </Link>
+        {/* 사람(유저) 버튼 */}
+        <span
+          className="ml-2 text-xl cursor-pointer"
+          title="User"
+          onClick={() => {
+            if (!auth.isLoggedIn) {
+              router.push("/grid/login");
+            } else {
+              router.push("/grid/findorders");
+            }
+          }}
+        >
+          👤
+        </span>
         <span className="ml-2 text-base font-medium flex items-center h-6">
           {auth.name}
         </span>
