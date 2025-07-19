@@ -22,10 +22,10 @@ public class ShoppingBasketItem extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product; // FK
+    private Product productId; // FK
 
     private String productName; // 상품 이름
-    private int orderCount; // 상품 개수
+    private int productCount; // 상품 개수
     private int productPrice; // 상품 가격
     private String productImage; // 상품 이미지
 }

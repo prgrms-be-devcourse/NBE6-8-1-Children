@@ -50,13 +50,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-//    product,
-//            reqBody.productName(),
-//            reqBody.description(),
-//            reqBody.productImage(),
-//            reqBody.price(),
-//            reqBody.stock()
-
     // 상품 정보 수정
 
     public void update(Product product, String productName, String description, String productImage, int price, int stock) {
