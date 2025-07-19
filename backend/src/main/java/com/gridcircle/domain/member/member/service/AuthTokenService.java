@@ -24,7 +24,7 @@ public class AuthTokenService {
         return Ut.jwt.toString(
                 jwtSecretKey,
                 accessTokenExpirationSeconds,
-                Map.of("id", id, "email", email, "name", name , "role", role)
+                Map.of("id", id, "email", email, "name", name, "role", role)
         );
     }
 
@@ -36,6 +36,7 @@ public class AuthTokenService {
         int id = (int) parsedPayload.get("id");
         String email = (String) parsedPayload.get("email");
         String name = (String) parsedPayload.get("name");
+
 
         return Map.of("id", id, "email", email, "name", name);
     }

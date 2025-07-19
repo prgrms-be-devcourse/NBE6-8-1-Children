@@ -32,15 +32,20 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.debug("Processing request for " + request.getRequestURI());
 
-        try {
+        try { // 필터 체인에서 다음 필터로 요청을 전달
             work(request, response, filterChain);
-        } catch (ServiceException e) {
+        } catch (ServiceException e) { //
             RsData<Void> rsData = e.getRsData();
-            response.setContentType("application/json");
+            response.setContentType("application/json;charset=UTF-8");
             response.setStatus(rsData.statusCode());
-            response.getWriter().write(
-                    Ut.json.toString(rsData)
-            );
+
+            String jsonResponse = Ut.json.toString(rsData);
+            if (jsonResponse == null) {
+                // Ut.json.toString()이 null을 반환할 경우를 대비한 폴백(Fallback) 로직
+                jsonResponse = "{\"resultCode\":\"" + rsData.resultCode() + "\",\"msg\":\"" + rsData.msg() + "\"}";
+            }
+
+            response.getWriter().write(jsonResponse);
         } catch (Exception e) {
             throw e;
         }
@@ -48,10 +53,12 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private void work(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // API 요청이 아니라면 패스
-        if (!request.getRequestURI().startsWith("/grid/admin/")) {
+        if (!request.getRequestURI().startsWith("/grid/admin/") &&
+                !request.getRequestURI().startsWith("/grid/shoppingbasket/")) { // /grid/shoppingbasket/도 인증 처리를 하도록 조건을 수정
             filterChain.doFilter(request, response);
             return;
         }
+
 
         // 인증, 인가가 필요없는 API 요청이라면 패스
         if (List.of("/api/v1/members/login", "/api/v1/members/logout", "/api/v1/members/join").contains(request.getRequestURI())) {
@@ -99,7 +106,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                 String email = (String) payload.get("email");
                 String name = (String) payload.get("name");
                 member = new Member(id, email, name);
-
                 isAccessTokenValid = true;
             }
         }

@@ -2,6 +2,7 @@ package com.gridcircle.domain.order.order.service;
 
 import com.gridcircle.domain.member.member.entity.Member;
 import com.gridcircle.domain.member.member.repository.MemberRepository;
+import com.gridcircle.domain.order.order.dto.OrderPageResponseDto;
 import com.gridcircle.domain.order.order.dto.OrderRequestDto;
 import com.gridcircle.domain.order.order.dto.OrderResponseDto;
 import com.gridcircle.domain.order.order.entity.Order;
@@ -10,6 +11,8 @@ import com.gridcircle.domain.order.order.entity.OrderStatus;
 import com.gridcircle.domain.order.order.repository.OrderRepository;
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.repository.ProductRepository;
+import com.gridcircle.domain.shoppingbasket.shoppingbasket.entity.ShoppingBasket;
+import com.gridcircle.domain.shoppingbasket.shoppingbasket.repository.ShoppingBasketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +27,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ProductRepository productRepository;
-    //private final ShoppingBasketRepository shoppingBasketRepository;
+    private final ShoppingBasketRepository shoppingBasketRepository;
 
-/*
+
     // 장바구니에 있는 데이터 + 사용자 주소를 주문 페이지로 보내주기 위한 dto를 생성하는 메서드 (프론트의 get요청)
     @Transactional(readOnly=true)
     public OrderPageResponseDto getOrderPageData(int memberId) {
@@ -40,7 +43,7 @@ public class OrderService {
         List<OrderPageResponseDto.OrderPageItemDto> items = new ArrayList<>();
         for (ShoppingBasket basket : baskets) {
             // 장바구니에서 상품 객체 조회
-            Product product = productRepository.findById(basket.getProductId())
+            Product product = productRepository.findById(basket.getProduct().getId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
             // items 리스트에 장바구니 내용(상품id, 상품이름, 상품가격, 담은 상품갯수, 상품이미지)을 dto로 저장
             items.add(new OrderPageResponseDto.OrderPageItemDto(
@@ -53,7 +56,6 @@ public class OrderService {
         }
         return new OrderPageResponseDto(member.getAddress(), items); // 장바구니 항목 + 현재 로그인한 사용자의 주소를 Dto로 생성 후 return
     }
-*/ // 장바구니가 없어서 오류나는 부분 주석 처리
 
 
     // 주문페이지에서 결제하기 버튼을 눌렀을 때, 주문 내역을 저장하는 메서드 (프론트의 post요청)

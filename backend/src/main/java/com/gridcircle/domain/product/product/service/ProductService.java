@@ -2,7 +2,6 @@ package com.gridcircle.domain.product.product.service;
 
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.repository.ProductRepository;
-import com.gridcircle.global.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
@@ -51,6 +50,14 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+//    product,
+//            reqBody.productName(),
+//            reqBody.description(),
+//            reqBody.productImage(),
+//            reqBody.price(),
+//            reqBody.stock()
+
+    // 상품 정보 수정
 
     public void update(Product product, String productName, String description, String productImage, int price, int stock) {
         product.update(
@@ -62,10 +69,12 @@ public class ProductService {
         );
     }
 
-    public void delete(int id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ServiceException("400-1","등록되지 않은 상품입니다."));
-
-        productRepository.delete(product);
+    // 상품 삭제
+    public Optional<Product> delete(int id) {
+        return productRepository.findById(id)
+                .map(product -> {
+                    productRepository.delete(product);
+                    return product;
+                });
     }
 }

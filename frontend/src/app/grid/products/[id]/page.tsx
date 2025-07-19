@@ -61,6 +61,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 // 상품 상세 정보 및 UI를 렌더링
 // 페이지 프론트 부분
 function ProductInfo({ productState }: { productState: { product: ProductDto | null } }) {
+  
   // 데이터 로딩 중 처리
   if (!productState || productState.product == null) return <div>로딩중...</div>;
   const { product } = productState;
@@ -79,6 +80,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
   const [mainImage, setMainImage] = useState(thumbnailArray[0]);
   // 수량 상태
   const [quantity, setQuantity] = useState(1);
+  const [showPopup, setShowPopup] = useState(false);
 
   // 수량 선택 버튼 (1~9)
   const handleQuantityChange = (delta: number) => {
@@ -91,7 +93,8 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
   };
 
   const router = useRouter();
-  const currentId = Number(product.id);
+  // 제품 id 
+  const productId = Number(product.id);
 
   // 페이지 이동 함수
   const goToProduct = (newId: number) => {
@@ -99,6 +102,40 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
       router.push(`/grid/products/${newId}`);
     }
   };
+
+  // 장바구니 담기 버튼 클릭 시 실행되는 함수
+  const handleAddToCart = async () => {
+    
+    // 장바구니에 담을 데이터 준비
+    const cartData = {
+      productId: productId,
+      productName: product.productName,
+      productImage: product.productImage.split("|")[0], // 대표 이미지
+      productCount: quantity,
+      productPrice: product.price,
+    };
+
+
+
+    // [1] 장바구니 테이블에 데이터 저장(POST 요청)
+    const res = await fetch("http://localhost:8080/grid/shoppingbasket/create",{
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        //"Authorization": `Bearer 7a0d7432-156f-4cd8-a943-d42a75610a4a eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiLslpHtmITspIAiLCJlbWFpbCI6ImFkbWluMkBnbWFpbC5jb20iLCJpZCI6MywiaWF0IjoxNzUyODIwODE5LCJleHAiOjE3NTI4MjIwMTl9.gDP2iR4k-FiSxOE3DWw0fXacFesAdwFHDvgrbX2ErDe38lSgFws0twSfX1lBKqbqZp1jQXghkMnx1MNQwCcxjw`, 
+      },
+      body: JSON.stringify(cartData),
+    });
+
+    if (res.ok) {
+      // [2] 팝업 띄우기
+      setShowPopup(true);
+    } else {
+      alert("장바구니 담기에 실패했습니다.");
+    }
+  };
+
 
   // 페이지 프론트 부분
   return (
@@ -141,10 +178,14 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <div className="mb-4 text-xl text-gray-600">재고: {product.stock}개</div>
             {/* 수량 선택 + 장바구니 */}
             <div className="flex items-center gap-6 mt-8">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-700 hover:bg-yellow-800 text-white">-</button>
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-600 hover:bg-yellow-700 text-white">-</button>
               <span className="font-bold text-3xl">{quantity}</span>
-              <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-700 hover:bg-yellow-800 text-white">+</button>
-              <button className="ml-8 px-10 py-4 bg-yellow-700 hover:bg-yellow-800 text-white rounded-xl font-semibold shadow-lg text-2xl transition">
+              <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-600 hover:bg-yellow-700 text-white">+</button>
+              {/* 장바구니 버튼 클릭 이벤트 */}
+              <button
+                className="ml-8 px-10 py-4 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold shadow-lg text-2xl transition"
+                onClick={handleAddToCart}
+              >
                 장바구니 담기
               </button>
             </div>
@@ -163,23 +204,49 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
         {/* 최하단: 커피 페이지 이동 */}
         <div className="flex justify-center items-center gap-8 mt-10">
           <button
-            onClick={() => goToProduct(currentId - 1)}
-            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition"
+            onClick={() => goToProduct(productId - 1)}
+            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition text-white"
             aria-label="이전 커피"
-            disabled={currentId <= 1}
+            disabled={productId <= 1}
           >
             &#8592;
           </button>
           <span className="text-xl font-bold text-gray-700">다른 커피 보기</span>
           <button
-            onClick={() => goToProduct(currentId + 1)}
-            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition"
+            onClick={() => goToProduct(productId + 1)}
+            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition text-white"
             aria-label="다음 커피"
           >
             &#8594;
           </button>
         </div>
       </div>
+      {/* 팝업 모달 */}
+      {showPopup && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-transparent z-50"
+          onClick={() => setShowPopup(false)} // 바깥 클릭 시 팝업 닫기
+        >
+          <div
+            className="bg-white rounded-xl p-8 shadow-lg flex flex-col items-center"
+            onClick={e => e.stopPropagation()} // 내부 클릭 시 닫히지 않게
+          >
+            <div className="mb-6 text-lg font-semibold">
+              상품 {quantity}개를 장바구니에 담았습니다.
+            </div>
+            {/* [3] 장바구니 페이지로 이동하는 버튼 */}
+            <button
+              onClick={() => {
+                setShowPopup(false); // 팝업 닫기
+                router.push(`/grid/shoppingbasket`); // 장바구니 페이지로 이동
+              }}
+              className="px-6 py-2 bg-yellow-600 text-white rounded-lg font-bold hover:bg-yellow-700"
+            >
+              장바구니 바로가기 &gt;
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
