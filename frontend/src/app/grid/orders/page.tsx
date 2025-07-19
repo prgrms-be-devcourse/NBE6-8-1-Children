@@ -31,14 +31,35 @@ export default function OrderPage() {
         setAddress(res.address); //서버가 보낸 응답데이터가 담긴 res.data에서 주소 추출
         setItems(res.items); // 서버가 보낸 응답데이터에서 items 추출(커피관련정보)
       })
-      .catch(err => alert('주문 데이터 불러오기 실패: ' + err.message));
-  }, []);
+      .catch(err => {
+        if (
+          err.message?.toLowerCase().includes("forbidden") ||
+          err.status === 403 ||
+          err.message?.toLowerCase().includes("unauthorized") ||
+          err.status === 401
+        ) {
+          if (window.confirm("로그인이 후 이용해주세요. 로그인 페이지로 이동합니다.")) {
+            router.push('/grid/login');
+          }
+          return;
+        }
+        if (err.message === "Failed to fetch" || err.message === "NetworkError when attempting to fetch resource.") {
+          alert("네트워크 연결에 문제가 있습니다. 인터넷 상태를 확인해주세요.");
+          return;
+        }
+        alert('주문 데이터 불러오기 실패: ' + err.message);
+      });
+  }, [router]);
 
   // 총 금액 계산
   const getTotal = () => items.reduce((sum, item) => sum + item.productPrice * item.orderCount, 0);
 
   // 결제하기 버튼 클릭 시 서버로 POST 요청될 주문페이지의 모든 데이터들
   const handleOrder = () => {
+    if (items.length === 0) {
+      alert("장바구니에 상품이 없습니다. 먼저 상품을 장바구니에 담아주세요.");
+      return;
+    }
     const orderPayload = { // 서버로 보낼 orderPayload 객체 생성
       totalPrice: getTotal(), // 총 금액
       address, // 주소
@@ -53,7 +74,6 @@ export default function OrderPage() {
       }))
     };
 
-    // 서버의 /order 엔드포인트로 orderPayload 객체를 POST 요청
     apiFetch('/grid/orders/basket/me/order', {
       method: "POST",
       body: JSON.stringify(orderPayload),
@@ -64,7 +84,25 @@ export default function OrderPage() {
       .then(() => {
         setShowPopup(true); // 서버에서 응답이 오면(성공하면) 팝업창 띄우기
       })
-      .catch(err => alert('주문 실패: ' + err.message));  // 서버에서 에러나면 에러메시지 띄우기
+      .catch(err => {
+        // 네트워크 에러
+        if (err.message === "Failed to fetch" || err.message === "NetworkError when attempting to fetch resource.") {
+          alert("네트워크 연결에 문제가 있습니다. 인터넷 상태를 확인해주세요.");
+          return;
+        }
+        // 서버에서 forbidden(403) 또는 unauthorized(401) 응답
+        if (err.message?.toLowerCase().includes("forbidden") || err.status === 403 || err.message?.toLowerCase().includes("unauthorized") || err.status === 401) {
+          alert("로그인이 필요합니다. 로그인 후 다시 시도해주세요.");
+          return;
+        }
+        // 장바구니 관련 에러
+        if (err.message?.toLowerCase().includes("empty") || err.message?.includes("장바구니")) {
+          alert("장바구니에 상품이 없습니다. 먼저 상품을 장바구니에 담아주세요.");
+          return;
+        }
+        // 기타 에러
+        alert("주문에 실패했습니다. 잠시 후 다시 시도해주세요.\n(에러: " + err.message + ")");
+      });
   };
 
   // 결제하기 버튼 눌러서 주문 완료되면 '결제완료' 팝업이 뜨고, 팝업 닫으면 메인화면으로 이동

@@ -58,6 +58,7 @@ public class OrderService {
     }
 
 
+
     // 주문페이지에서 결제하기 버튼을 눌렀을 때, 주문 내역을 저장하는 메서드 (프론트의 post요청)
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto reqDto, int memberId) { // reqDto는 프론트가 보내온 데이터, memberId는 사용자 id
