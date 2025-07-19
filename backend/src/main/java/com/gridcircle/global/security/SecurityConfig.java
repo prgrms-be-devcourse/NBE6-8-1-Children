@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 .requestMatchers("/grid/logout").permitAll()
                                 .requestMatchers("/grid/admin**").hasRole("ADMIN")
                                 .requestMatchers("/grid/shoppingbasket/**").authenticated()
+                                .requestMatchers("/grid/orders/**").authenticated()
                                 .requestMatchers("/api/*/**").authenticated()
                                 .anyRequest().permitAll()
                 )
