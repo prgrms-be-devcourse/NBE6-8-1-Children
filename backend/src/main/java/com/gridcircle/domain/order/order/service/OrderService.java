@@ -5,9 +5,9 @@ import com.gridcircle.domain.member.member.repository.MemberRepository;
 import com.gridcircle.domain.order.order.dto.OrderPageResponseDto;
 import com.gridcircle.domain.order.order.dto.OrderRequestDto;
 import com.gridcircle.domain.order.order.dto.OrderResponseDto;
-import com.gridcircle.domain.order.order.entity.Order;
 import com.gridcircle.domain.order.order.entity.OrderItem;
 import com.gridcircle.domain.order.order.entity.OrderStatus;
+import com.gridcircle.domain.order.order.entity.Orders;
 import com.gridcircle.domain.order.order.repository.OrderRepository;
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.repository.ProductRepository;
@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -39,24 +41,35 @@ public class OrderService {
         // 현재 로그인중인 member의 장바구니 데이터를 모아서 baskets 객체에 저장
         List<ShoppingBasket> baskets = shoppingBasketRepository.findByMemberId(memberId);
 
-        // OrderPageItemDto 타입의 데이터를 담는 items 리스트 생성
-        List<OrderPageResponseDto.OrderPageItemDto> items = new ArrayList<>();
+        // 상품별로 수량을 합치는 Map 생성
+        Map<Integer, OrderPageResponseDto.OrderPageItemDto> productMap = new HashMap<>();
         for (ShoppingBasket basket : baskets) {
-            // 장바구니에서 상품 객체 조회
             Product product = productRepository.findById(basket.getProduct().getId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-            // items 리스트에 장바구니 내용(상품id, 상품이름, 상품가격, 담은 상품갯수, 상품이미지)을 dto로 저장
-            items.add(new OrderPageResponseDto.OrderPageItemDto(
-                    product.getId(),
-                    product.getProductName(),
-                    product.getPrice(),
-                    basket.getProductCount(),
-                    product.getProductImage().split("\\|")[0] // 첫번째 이미지 url만 프론트로 전송
-            ));
+            Integer productId = product.getId();
+            productMap.compute(productId, (key, existingItem) -> {
+                if (existingItem != null) {// 이미 존재하는 상품이면 수량만 증가
+                    return new OrderPageResponseDto.OrderPageItemDto(
+                            existingItem.productId(),
+                            existingItem.productName(),
+                            existingItem.productPrice(),
+                            existingItem.orderCount() + basket.getProductCount(),
+                            existingItem.productImage()
+                    );
+                } else {// 장바구니에 존재하지 않는 상품이면 새로 추가
+                    return new OrderPageResponseDto.OrderPageItemDto(
+                            product.getId(),
+                            product.getProductName(),
+                            product.getPrice(),
+                            basket.getProductCount(),
+                            product.getProductImage().split("\\|")[0]
+                    );
+                }
+            });
         }
-        return new OrderPageResponseDto(member.getAddress(), items); // 장바구니 항목 + 현재 로그인한 사용자의 주소를 Dto로 생성 후 return
+        List<OrderPageResponseDto.OrderPageItemDto> items = new ArrayList<>(productMap.values());
+        return new OrderPageResponseDto(member.getAddress(), items);
     }
-
 
 
 
@@ -67,13 +80,13 @@ public class OrderService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("로그인 또는 회원가입을 진행해주세요."));
         // Order 엔티티 생성
-        Order order = new Order();
+        Orders orders = new Orders();
         // 생성한 order에 값 설정
-        order.setTotalPrice(reqDto.totalPrice());
-        order.setAddress(reqDto.address());
-        order.setOrderStatus(OrderStatus.valueOf(reqDto.orderStatus()));
-        order.setDeliveryStatus(reqDto.deliveryStatus());
-        order.setMember(member);
+        orders.setTotalPrice(reqDto.totalPrice());
+        orders.setAddress(reqDto.address());
+        orders.setOrderStatus(OrderStatus.valueOf(reqDto.orderStatus()));
+        orders.setDeliveryStatus(reqDto.deliveryStatus());
+        orders.setMember(member);
 
         // 상세 항목을 담을 orderItems 리스트 생성
         List<OrderItem> orderItems = new ArrayList<>();
@@ -89,25 +102,28 @@ public class OrderService {
             orderItem.setOrderCount(itemDto.orderCount());
             orderItem.setProductPrice(itemDto.productPrice());
             orderItem.setProductImage(itemDto.productImage());
-            orderItem.setOrder(order);
+            orderItem.setOrders(orders);
             orderItem.setProduct(product);
             // orderItems 리스트에 orderItem 엔티티 저장
             orderItems.add(orderItem);
         }
         // order 엔티티에 orderItems 리스트 저장
-        order.setOrderItems(orderItems);
+        orders.setOrderItems(orderItems);
 
         // order 엔티티를 orderRepository에 저장 (이때, CasecadeType.PERSIST로 인해, OrderItem도 함께 저장됨)
-        Order savedOrder = orderRepository.save(order);
+        Orders savedOrders = orderRepository.save(orders);
+
+        // 주문 완료 후 해당 사용자의 장바구니 비우기
+        shoppingBasketRepository.deleteByMemberId(memberId);
 
         // 주문 내역 db에 등록한 데이터를 dto로 변환하여 응답
-        return new OrderResponseDto(savedOrder);
+        return new OrderResponseDto(savedOrders);
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponseDto> getOrderHistory(int memberId) {
         // 해당 사용자의 모든 주문(Order) 조회
-        List<Order> orders = orderRepository.findByMemberId(memberId);
+        List<Orders> orders = orderRepository.findByMemberId(memberId);
         return orders.stream()
                 .map(OrderResponseDto::new)
                 .toList(); //주문 리스트를 dto 리스트로 변환 (프론트에 응답 보내기 위해)
@@ -115,19 +131,25 @@ public class OrderService {
 
     @Transactional
     public void cancelOrder(int orderId, int memberId) {
-        Order order = orderRepository.findById(orderId)
+        Orders orders = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
         // 추가로 본인 주문이 맞는지 체크 (혹시나해서)
-        if (order.getMember().getId() != memberId){
+        if (orders.getMember().getId() != memberId){
             throw new IllegalArgumentException("본인 주문만 취소할 수 있습니다.");
         }
-        //현재 시각이 오늘 오후 2시를 지난 시간이라면 취소 불가능
+        // 각 주문의 배송 주기에 따라 취소 가능 여부 체크
+        LocalDateTime orderDate = orders.getCreatedDate();
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime todayTwoPM = now.withHour(14).withMinute(0).withSecond(0).withNano(0);
-        if(now.isAfter(todayTwoPM)){
-            throw new IllegalArgumentException();
+        LocalDateTime cancelDeadline;
+        if (orderDate.getHour() < 14) {
+            cancelDeadline = orderDate.withHour(14).withMinute(0).withSecond(0).withNano(0);
+        } else {
+            cancelDeadline = orderDate.plusDays(1).withHour(14).withMinute(0).withSecond(0).withNano(0);
         }
-        order.setOrderStatus(OrderStatus.CANCELLED);
+        if (now.isAfter(cancelDeadline)) {
+            throw new IllegalArgumentException("배송이 시작되어 주문을 취소할 수 없습니다.");
+        }
+        orders.setOrderStatus(OrderStatus.CANCELLED);
         //modifiedDate는 @LastModifiedDate에 의해 자동 갱신되므로 생략
     }
 }
