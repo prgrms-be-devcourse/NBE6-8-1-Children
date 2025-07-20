@@ -27,11 +27,11 @@ export default function Header() {
   return (
     // Header
     <header className="w-full flex items-center justify-between px-12 py-6 border-b border-gray-200">
-      {/* Logo */}
-      <div className="font-extrabold text-2xl">Grid & Circle</div>
-      {/* Navigation */}
-      <nav className="flex gap-8 text-base font-medium">
-        <Link href="/" className="text-black hover:font-bold">
+      {/* 로고 영역 */}
+      <div className="font-extrabold text-3xl">Grid & Circle</div>
+      {/* 네비게이션 메뉴 */}
+      <nav className="flex gap-10 text-xl font-bold">
+        <Link href="/" className="text-black hover:font-extrabold">
           Home
         </Link>
         <Link href="/#products" className="text-gray-500 hover:text-black">
@@ -41,8 +41,9 @@ export default function Header() {
           Contacts
         </Link>
       </nav>
-      {/* Actions */}
-      <div className="flex items-center gap-4">
+      {/* 액션 버튼 영역 (로그인, 로그아웃, 장바구니, 주문, 이름) */}
+      <div className="flex items-center gap-3">
+        {/* 회원가입 버튼 (비로그인 시) */}
         {!auth.isLoggedIn && (
           <Link href="/grid/signup">
             <button className="px-4 py-1 border rounded-full text-sm font-medium border-gray-400 hover:bg-gray-100">
@@ -50,16 +51,16 @@ export default function Header() {
             </button>
           </Link>
         )}
+        {/* 로그인/로그아웃 버튼 */}
         <button
           onClick={auth.isLoggedIn ? handleLogout : handleLogin}
           className="px-4 py-1 rounded-full text-sm font-medium bg-black text-white hover:bg-gray-800"
         >
           {auth.isLoggedIn ? "logout" : "login"}
         </button>
-
         {/* 장바구니 버튼 */}
         <span
-          className="ml-4 text-xl cursor-pointer"
+          className="ml-3 text-xl cursor-pointer"
           title="Cart"
           onClick={() => {
             if (!auth.isLoggedIn) {
@@ -71,10 +72,10 @@ export default function Header() {
         >
           🛒
         </span>
-        {/* 사람(유저) 버튼 */}
+        {/* 주문 버튼 */}
         <span
-          className="ml-2 text-xl cursor-pointer"
-          title="User"
+          className="ml-3 text-2xl cursor-pointer"
+          title="Order"
           onClick={() => {
             if (!auth.isLoggedIn) {
               router.push("/grid/login");
@@ -83,9 +84,10 @@ export default function Header() {
             }
           }}
         >
-          👤
+          📦
         </span>
-        <span className="ml-2 text-base font-medium flex items-center h-6">
+        {/* 이름 부분 */}
+        <span className="ml-2 text-lg font-medium flex items-center h-6">
           {auth.name}
         </span>
       </div>
