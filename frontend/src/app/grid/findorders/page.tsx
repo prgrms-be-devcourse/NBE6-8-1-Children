@@ -5,13 +5,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 
-// 주문 상태 enum
 enum OrderStatus {
   ORDERED = "ORDERED",
   CANCELLED = "CANCELLED"
 }
-
-// 주문 아이템 타입
 interface OrderItemDto {
   id: number;
   productName: string;
@@ -20,15 +17,13 @@ interface OrderItemDto {
   productImage: string;
   totalCount: number;
 }
-
-// 주문 타입
 interface OrderDto {
   id: number;
   createdDate: string;
   address: string;
   totalPrice: number;
   orderStatus: OrderStatus;
-  deliveryStatus: boolean; // boolean으로 통일
+  deliveryStatus: boolean; 
   orderItems: OrderItemDto[];
 }
 
@@ -37,15 +32,13 @@ export default function FindOrdersPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // 주문 내역을 불러오기 위한 GET 요청청
   useEffect(() => {
     fetchOrders();
   }, [router]);
-
   const fetchOrders = async () => {
     try {
-      // 서버로 GET 요청
-      const response = await apiFetch("/grid/orders/findOrder") as OrderDto[];
+      //주문내역조회페이지 들어가면 서버에 데이터 GET요청 
+      const response = await apiFetch("/grid/orders/findOrder") as OrderDto[]; 
       setOrders(response);
     } catch (error: any) {
       if (
@@ -69,12 +62,10 @@ export default function FindOrdersPage() {
     }
   };
 
-  // 각 주문의 배송 시간에 따라 주문 취소 가능 여부 결정
+  // 각 주문 시간에 따라 주문 취소 가능 여부 결정
   const canCancelOrder = (createdDate: string): boolean => {
-    const orderDate = new Date(createdDate);
+    const orderDate = new Date(createdDate); 
     const now = new Date();
-    const orderDay2PM = new Date(orderDate);
-    orderDay2PM.setHours(14, 0, 0, 0);
     const cancelDeadline = new Date(orderDate);
     if (orderDate.getHours() < 14) {
       cancelDeadline.setHours(14, 0, 0, 0);
@@ -84,10 +75,8 @@ export default function FindOrdersPage() {
     }
     return now <= cancelDeadline;
   };
-
-  // 주문 취소 처리를 위한 로직
   const handleCancelOrder = async (orderId: number, createdDate: string) => {
-    if (!confirm("해당 주문을 정말 취소하시겠습니까?")) { // 팝업창
+    if (!confirm("해당 주문을 정말 취소하시겠습니까?")) { 
       return;
     }
     
@@ -114,12 +103,11 @@ export default function FindOrdersPage() {
         alert("주문이 취소되었습니다.");
         return;
       }
+
       alert("주문 취소에 실패했습니다."); // 팝업창
       fetchOrders(); // 주문 내역 다시 불러옴 -> 리렌더링
     }
   };
-
-
   // 날짜 포멧 함수 (25.07.17 12:42:00 형태로 화면에 보이기 위해)
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -131,8 +119,7 @@ export default function FindOrdersPage() {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`;
   };
-
-  // orderStatus(주문상태)를 한글 텍스트로 변환.
+  // orderStatus(주문상태) 한글 텍스트로 변환
   const getOrderStatusText = (status: OrderStatus): string => {
     switch (status) {
       case OrderStatus.ORDERED:
@@ -143,16 +130,13 @@ export default function FindOrdersPage() {
         return status;
     }
   };
-
-  // 배송 상태 텍스트
+  // deliveryStatus(배송상태) 한글 텍스트 변환 
   const getDeliveryStatusText = (order: OrderDto): string => {
     if (order.orderStatus === OrderStatus.CANCELLED) {
       return "배송 불가";
     }
     return order.deliveryStatus ? "배송 시작" : "배송 시작 전";
   };
-
-  // 데이터 로딩 중에는 로딩중... 이라는 메시지 표시시
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -160,8 +144,7 @@ export default function FindOrdersPage() {
       </div>
     );
   }
-
-  // 주문 내역 화면 렌더링링
+  // 주문 내역 화면 렌더링
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">

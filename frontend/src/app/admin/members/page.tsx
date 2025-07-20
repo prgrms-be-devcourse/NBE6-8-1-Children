@@ -2,8 +2,15 @@
 "use client";
 import { useEffect, useState } from "react";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  address: string;
+}
+
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
