@@ -75,25 +75,24 @@ export default function FindOrdersPage() {
     }
     return now <= cancelDeadline;
   };
+  // 사용자가 주문 취소버튼 눌렀을 때 서버로 PUT 요청
   const handleCancelOrder = async (orderId: number, createdDate: string) => {
     if (!confirm("해당 주문을 정말 취소하시겠습니까?")) { 
       return;
     }
-    
     // 오후 2시가 지났으면 취소 불가
     if (!canCancelOrder(createdDate)) {
       alert("배송이 시작되어 주문을 취소할 수 없습니다.");
       return;
     }
-    
     try {
       // 사용자가 주문 취소버튼 클릭하면 서버로 PUT 요청
       await apiFetch(`/grid/orders/${orderId}/cancel`, {
         method: "PUT"
       });
       await fetchOrders();
-      alert("주문이 취소되었습니다."); // 주문 취소 시 팝업창 뜸. 사용자가 ok 버튼 누르면 팝업 닫히고, 갱신된 주문 내역이 화면에 보임임
-    } catch (error: any) { // 주문 취소 실패 시
+      alert("주문이 취소되었습니다."); 
+    } catch (error: any) { 
       console.error("주문 취소에 실패했습니다:", error);
       // 서버에서 성공했지만 응답이 없어서 에러로 처리되는 경우
       if (error.message?.includes("Unexpected end of JSON input") || 
@@ -103,9 +102,8 @@ export default function FindOrdersPage() {
         alert("주문이 취소되었습니다.");
         return;
       }
-
-      alert("주문 취소에 실패했습니다."); // 팝업창
-      fetchOrders(); // 주문 내역 다시 불러옴 -> 리렌더링
+      alert("주문 취소에 실패했습니다."); 
+      fetchOrders(); //리렌더링
     }
   };
   // 날짜 포멧 함수 (25.07.17 12:42:00 형태로 화면에 보이기 위해)
