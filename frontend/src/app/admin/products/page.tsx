@@ -58,6 +58,7 @@ export default function AdminProductsPage() {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) {
@@ -80,6 +81,7 @@ export default function AdminProductsPage() {
   function handleDelete(id: number) {
     fetch(`http://localhost:8080/grid/admin/product/${id}`, {
       method: "DELETE",
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) {
