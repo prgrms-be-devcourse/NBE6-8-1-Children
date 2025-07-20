@@ -54,8 +54,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private void work(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // API 요청이 아니라면 패스
         if (!request.getRequestURI().startsWith("/grid/admin/") &&
-                !request.getRequestURI().startsWith("/grid/shoppingbasket/")&&
-                !request.getRequestURI().startsWith("/grid/orders/")) { // /grid/shoppingbasket/도 인증 처리를 하도록 조건을 수정
+                !request.getRequestURI().startsWith("/grid/shoppingbasket")&&
+                !request.getRequestURI().startsWith("/grid/orders")) { // /grid/shoppingbasket/도 인증 처리를 하도록 조건을 수정
             filterChain.doFilter(request, response);
             return;
         }

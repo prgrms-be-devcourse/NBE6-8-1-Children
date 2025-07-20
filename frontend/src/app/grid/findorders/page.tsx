@@ -69,24 +69,34 @@ export default function FindOrdersPage() {
     }
   };
 
-  // 전날 오후 2시 ~ 오늘 오후 2시 사이 주문만 취소 가능 (+ 오후 2시가 지나면 취소 불가)
+  // 각 주문의 배송 시간에 따라 주문 취소 가능 여부 결정
   const canCancelOrder = (createdDate: string): boolean => {
     const orderDate = new Date(createdDate);
     const now = new Date();
-    const yesterday2PM = new Date(now);
-    yesterday2PM.setDate(yesterday2PM.getDate() - 1);
-    yesterday2PM.setHours(14, 0, 0, 0);
-    const today2PM = new Date(now);
-    today2PM.setHours(14, 0, 0, 0);
-    // 주문이 전날 오후 2시~오늘 오후 2시 사이에 생성됐고 지금이 오늘 오후 2시 이전이면 취소가능
-    return orderDate >= yesterday2PM && orderDate <= today2PM && now <= today2PM;
+    const orderDay2PM = new Date(orderDate);
+    orderDay2PM.setHours(14, 0, 0, 0);
+    const cancelDeadline = new Date(orderDate);
+    if (orderDate.getHours() < 14) {
+      cancelDeadline.setHours(14, 0, 0, 0);
+    } else {
+      cancelDeadline.setDate(cancelDeadline.getDate() + 1);
+      cancelDeadline.setHours(14, 0, 0, 0);
+    }
+    return now <= cancelDeadline;
   };
 
   // 주문 취소 처리를 위한 로직
-  const handleCancelOrder = async (orderId: number) => {
+  const handleCancelOrder = async (orderId: number, createdDate: string) => {
     if (!confirm("해당 주문을 정말 취소하시겠습니까?")) { // 팝업창
       return;
     }
+    
+    // 오후 2시가 지났으면 취소 불가
+    if (!canCancelOrder(createdDate)) {
+      alert("배송이 시작되어 주문을 취소할 수 없습니다.");
+      return;
+    }
+    
     try {
       // 사용자가 주문 취소버튼 클릭하면 서버로 PUT 요청
       await apiFetch(`/grid/orders/${orderId}/cancel`, {
@@ -94,9 +104,17 @@ export default function FindOrdersPage() {
       });
       await fetchOrders();
       alert("주문이 취소되었습니다."); // 주문 취소 시 팝업창 뜸. 사용자가 ok 버튼 누르면 팝업 닫히고, 갱신된 주문 내역이 화면에 보임임
-    } catch (error) { // 주문 취소 실패 시
+    } catch (error: any) { // 주문 취소 실패 시
       console.error("주문 취소에 실패했습니다:", error);
-      alert("배송이 시작되어 주문을 취소할 수 없습니다."); // 팝업창
+      // 서버에서 성공했지만 응답이 없어서 에러로 처리되는 경우
+      if (error.message?.includes("Unexpected end of JSON input") || 
+          error.message?.includes("JSON") ||
+          error.status === 200) {
+        await fetchOrders();
+        alert("주문이 취소되었습니다.");
+        return;
+      }
+      alert("주문 취소에 실패했습니다."); // 팝업창
       fetchOrders(); // 주문 내역 다시 불러옴 -> 리렌더링
     }
   };
@@ -178,11 +196,11 @@ export default function FindOrdersPage() {
                         <span>
                           <b>배송 상태 :</b> {getDeliveryStatusText(order)}
                         </span>
-                        {/* 주문 취소 버튼 노출 조건 */}
-                        {!isCancelled && canCancelOrder(order.createdDate) && (
+                        {/* 주문 취소 버튼 - 취소된 주문이 아니면 항상 표시 */}
+                        {!isCancelled && (
                           <button
                             className="border border-black px-4 py-1 rounded hover:bg-gray-100"
-                            onClick={() => handleCancelOrder(order.id)}
+                            onClick={() => handleCancelOrder(order.id, order.createdDate)}
                           >
                             주문 취소
                           </button>

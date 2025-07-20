@@ -1,6 +1,6 @@
 package com.gridcircle.domain.order.order.dto;
 
-import com.gridcircle.domain.order.order.entity.Order;
+import com.gridcircle.domain.order.order.entity.Orders;
 import com.gridcircle.domain.order.order.entity.OrderItem;
 
 import java.util.List;
@@ -16,16 +16,16 @@ public record OrderResponseDto (
         String modifiedDate,
         List<OrderItemResponseDto> orderItems
 ){
-    public OrderResponseDto(Order order){
+    public OrderResponseDto(Orders orders){
         this(
-                order.getId(),
-                order.getTotalPrice(),
-                order.getAddress(),
-                order.getOrderStatus().name(),  // enum orderStatus를 String 타입으로 전달!
-                order.isDeliveryStatus(),
-                order.getCreatedDate().toString(), // createdDate가 LocalDateTime타입이니까, String으로 바꿈
-                order.getModifiedDate() != null ? order.getModifiedDate().toString() : null,
-                order.getOrderItems().stream().map(OrderItemResponseDto::new).toList()
+                orders.getId(),
+                orders.getTotalPrice(),
+                orders.getAddress(),
+                orders.getOrderStatus().name(),  // enum orderStatus를 String 타입으로 전달!
+                orders.isDeliveryStatus(),
+                orders.getCreatedDate().toString(), // createdDate가 LocalDateTime타입이니까, String으로 바꿈
+                orders.getModifiedDate() != null ? orders.getModifiedDate().toString() : null,
+                orders.getOrderItems().stream().map(OrderItemResponseDto::new).toList()
         );
     }
 

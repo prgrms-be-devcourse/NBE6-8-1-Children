@@ -14,7 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Order extends BaseEntity {
+
+public class Orders extends BaseEntity {
     private long totalPrice; // 주문 총 가격
 
     private String address; // 주소
@@ -28,6 +29,6 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member; //FK
 
-    @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy="orders", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<OrderItem> orderItems = new ArrayList<>(); // 주문 품목들
 }
