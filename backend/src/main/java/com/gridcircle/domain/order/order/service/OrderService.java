@@ -145,5 +145,12 @@ public class OrderService {
         // @Transactional이 붙어 있어서, 메서드 실행 중 수정한 엔티티 변경사항은 트랜젝션 종료 시 DB에 자동 반영됨 (더티체킹)
         orders.setOrderStatus(OrderStatus.CANCELLED);
         //modifiedDate는 @LastModifiedDate에 의해 자동 갱신됨
+
+        // 만약 고객이 주문 취소하면 Product의 stock도 취소한 만큼 다시 채움
+        for (OrderItem orderItem : orders.getOrderItems()) {
+            Product product = orderItem.getProduct();
+            int restoreStock = product.getStock() + orderItem.getOrderCount(); // 현재 product 재고 + 취소된 product 수량
+            product.updateStock(restoreStock);
+        }
     }
 }
