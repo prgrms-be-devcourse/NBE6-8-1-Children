@@ -174,7 +174,13 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <div className="text-4xl font-bold text-yellow-800 mb-4">
               {product.price.toLocaleString()}원
             </div>
-            <div className="mb-4 text-2xl text-gray-800">{product.description}</div>
+            <div
+              className="mb-4 text-2xl text-gray-800"
+              style={{ whiteSpace: "pre-line" }}
+            >
+              {/* 백엔드에서 \n으로 저장된 줄바꿈을 실제 줄바꿈(\n)으로 변환해서 화면에 줄바꿈이 적용되도록 함 */}
+              {product.description.replaceAll("\\n", "\n")}
+            </div>
             <div className="mb-4 text-xl text-gray-600">재고: {product.stock}개</div>
             {/* 수량 선택 + 장바구니 */}
             <div className="flex items-center gap-6 mt-8">
