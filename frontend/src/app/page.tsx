@@ -9,10 +9,24 @@ import type { ProductDto } from "@/type/product";
 export default function Home() {
   const [products, setProducts] = useState<ProductDto[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const productsSectionRef = useRef<HTMLDivElement>(null); // Products 섹션 ref
 
   useEffect(() => {
     apiFetch("/grid/products/") // 여러 상품을 반환하는 API 엔드포인트로 수정
       .then(setProducts);
+  }, []);
+
+  // 외부에서 호출할 수 있도록 products 섹션 스크롤 함수 추가
+  useEffect(() => {
+    // window에 함수 등록
+    (window as any).scrollToProductsSection = () => {
+      if (productsSectionRef.current) {
+        productsSectionRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+    return () => {
+      delete (window as any).scrollToProductsSection;
+    };
   }, []);
 
   if (products == null) return <div>로딩중...</div>;
@@ -63,7 +77,7 @@ export default function Home() {
       </section>
 
       {/* 상품 리스트 섹션 */}
-      <section id="products" className="w-full text-black mt-16 relative">
+      <section id="products" ref={productsSectionRef} className="w-full text-black mt-16 relative">
         <h2 className="text-4xl font-extrabold mb-10 text-black text-center tracking-tight">PRODUCTS</h2>
         <div className="relative">
           {/* 좌측 스크롤 버튼 */}
@@ -122,40 +136,42 @@ export default function Home() {
       {/* About Us(회사 소개) 섹션 */}
       <section
         id="about"
-        className="w-full flex flex-col items-center mt-12 text-black"
+        className="w-full flex flex-col items-center mt-[96px] text-black"
       >
-        <h2 className="text-4xl font-extrabold mb-6 text-black text-center tracking-tight">About us</h2>
-        <div className="text-xl text-gray-800 mb-10 text-center">
+        <h2 className="text-4xl font-extrabold mb-6 text-black text-center tracking-tight">ABOUT US</h2>
+        <div className="text-xl text-gray-800 mb-16 text-center">
           지금 주문하고, 집에서 편하게 신선함을 경험하세요!
         </div>
-        <div className="flex flex-col md:flex-row gap-12 w-full justify-center">
+        {/* 특징 구역 위에 여백 추가 */}
+        <div className="h-10" />
+        <div className="flex flex-col md:flex-row gap-16 w-full justify-center">
           {/* 특징 1 */}
           <div className="flex flex-col items-center flex-1 min-w-[200px]">
-            <div className="bg-[#a98c6c] text-white rounded-full w-20 h-20 flex items-center justify-center text-4xl mb-6">
+            <div className="bg-[#a98c6c] text-white rounded-full w-24 h-24 flex items-center justify-center text-5xl mb-8">
               🌱
             </div>
-            <div className="font-bold mb-2 text-black text-2xl">다양한 상품 구성</div>
-            <div className="text-center text-gray-800 text-lg">
+            <div className="font-bold mb-3 text-black text-3xl">다양한 상품 구성</div>
+            <div className="text-center text-gray-800 text-2xl">
               엄선된 인기 상품을 한 곳에서 만나보세요.
             </div>
           </div>
           {/* 특징 2 */}
           <div className="flex flex-col items-center flex-1 min-w-[200px]">
-            <div className="bg-[#a98c6c] text-white rounded-full w-20 h-20 flex items-center justify-center text-4xl mb-6">
+            <div className="bg-[#a98c6c] text-white rounded-full w-24 h-24 flex items-center justify-center text-5xl mb-8">
               🚚
             </div>
-            <div className="font-bold mb-2 text-black text-2xl">빠르고 무료인 배송</div>
-            <div className="text-center text-gray-800 text-lg">
+            <div className="font-bold mb-3 text-black text-3xl">빠르고 무료인 배송</div>
+            <div className="text-center text-gray-800 text-2xl">
               전국 어디든 빠르고 안전하게, 무료로 배송해드립니다.
             </div>
           </div>
           {/* 특징 3 */}
           <div className="flex flex-col items-center flex-1 min-w-[200px]">
-            <div className="bg-[#a98c6c] text-white rounded-full w-20 h-20 flex items-center justify-center text-4xl mb-6">
+            <div className="bg-[#a98c6c] text-white rounded-full w-24 h-24 flex items-center justify-center text-5xl mb-8">
               📞
             </div>
-            <div className="font-bold mb-2 text-black text-2xl">24시간 고객 지원</div>
-            <div className="text-center text-gray-800 text-lg">
+            <div className="font-bold mb-3 text-black text-3xl">24시간 고객 지원</div>
+            <div className="text-center text-gray-800 text-2xl">
               언제든 궁금한 점이 있다면, 연중무휴 실시간 상담으로 도와드립니다.
             </div>
           </div>

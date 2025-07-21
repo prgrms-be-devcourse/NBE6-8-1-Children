@@ -184,12 +184,12 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
             <div className="mb-4 text-xl text-gray-600">재고: {product.stock}개</div>
             {/* 수량 선택 + 장바구니 */}
             <div className="flex items-center gap-6 mt-8">
-              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-600 hover:bg-yellow-700 text-white">-</button>
+              <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="px-6 py-3 text-2xl border rounded bg-black hover:bg-gray-800 text-white">-</button>
               <span className="font-bold text-3xl">{quantity}</span>
-              <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-yellow-600 hover:bg-yellow-700 text-white">+</button>
+              <button onClick={() => setQuantity(q => Math.min(9, q + 1))} className="px-6 py-3 text-2xl border rounded bg-black hover:bg-gray-800 text-white">+</button>
               {/* 장바구니 버튼 클릭 이벤트 */}
               <button
-                className="ml-8 px-10 py-4 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold shadow-lg text-2xl transition"
+                className="ml-8 px-10 py-4 bg-black hover:bg-gray-800 text-white rounded-xl font-semibold shadow-lg text-2xl transition"
                 onClick={handleAddToCart}
               >
                 장바구니 담기
@@ -211,7 +211,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
         <div className="flex justify-center items-center gap-8 mt-10">
           <button
             onClick={() => goToProduct(productId - 1)}
-            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition text-white"
+            className="text-4xl px-6 py-2 rounded-full bg-[#f5e7d4] border border-gray-300 hover:bg-yellow-200 transition text-gray-700"
             aria-label="이전 커피"
             disabled={productId <= 1}
           >
@@ -220,7 +220,7 @@ function ProductInfo({ productState }: { productState: { product: ProductDto | n
           <span className="text-xl font-bold text-gray-700">다른 커피 보기</span>
           <button
             onClick={() => goToProduct(productId + 1)}
-            className="text-4xl px-6 py-2 rounded-full bg-yellow-600 hover:bg-yellow-700 transition text-white"
+            className="text-4xl px-6 py-2 rounded-full bg-[#f5e7d4] border border-gray-300 hover:bg-yellow-200 transition text-gray-700"
             aria-label="다음 커피"
           >
             &#8594;
