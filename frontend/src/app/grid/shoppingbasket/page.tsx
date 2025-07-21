@@ -60,10 +60,15 @@ export default function ShoppingBasketPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold mb-12">장바구니</h1>
-      <div className="w-full max-w-2xl">
+      <h1 className="text-4xl font-bold mb-10">장바구니</h1>
+      <div className="w-full max-w-3xl rounded-2xl p-5 bg-[#f5e7d4]">
+        {/* 장바구니 상품 목록, 스크롤 적용 */}
+        <div className="max-h-[600px] overflow-y-auto p-3">
         {basket.map((item, idx) => (
-          <div key={idx} className="flex items-center justify-between mb-10">
+          <div
+            key={idx}
+            className="flex items-center justify-between mb-5 border border-gray-300 rounded-xl bg-white p-3 shadow-sm"
+          >
             <div className="flex items-center gap-6">
               <img src={item.productImage} alt={item.productName} className="w-24 h-24 rounded-lg object-cover" />
               <div>
@@ -81,19 +86,18 @@ export default function ShoppingBasketPage() {
             </button>
           </div>
         ))}
+        </div>
+        {/* 총 가격 */}
         <hr className="my-8" />
         <div className="flex justify-between items-center text-xl font-bold mb-8">
           <span>Total</span>
           <span>{total.toLocaleString()}원</span>
         </div>
-        <button className="w-full py-4 bg-yellow-600 hover:bg-yellow-700 text-white text-lg font-bold rounded transition"
+        <button className="w-full py-4 bg-black hover:bg-gray-800 text-white text-lg font-bold rounded transition"
                 onClick={() => {router.push('/grid/orders');}}
         >
-
           결제하러 가기
-        </button>
-
-        
+        </button>       
       </div>
     </div>
   );
