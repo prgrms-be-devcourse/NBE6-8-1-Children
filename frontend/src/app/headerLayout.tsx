@@ -34,11 +34,18 @@ export default function Header() {
         <Link href="/" className="text-black hover:font-extrabold">
           Home
         </Link>
-        <Link href="/#products" className="text-gray-500 hover:text-black">
+        <span
+          className="text-gray-500 hover:text-black cursor-pointer"
+          onClick={() => {
+            if (typeof window !== "undefined" && (window as any).scrollToProductsSection) {
+              (window as any).scrollToProductsSection();
+            } 
+          }}
+        >
           Products
-        </Link>
+        </span>
         <Link href="/#about" className="text-gray-500 hover:text-black">
-          Contacts
+          About Us
         </Link>
       </nav>
       {/* 액션 버튼 영역 (로그인, 로그아웃, 장바구니, 주문, 이름) */}
