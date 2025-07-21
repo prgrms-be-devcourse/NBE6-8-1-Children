@@ -6,7 +6,7 @@ Grid &amp; Circle 커피 원두 주문 시스템
 
 ### 고객
 - 회원가입 및 로그인
-- 원두 상품 목록 및 카테고리별 조회
+- 원두 상품 목록 조회
 - 장바구니 담기, 수정, 삭제
 - 주문 및 결제 진행
 - 마이페이지를 통한 주문 내역 확인
@@ -20,9 +20,9 @@ Grid &amp; Circle 커피 원두 주문 시스템
 
 ## ⚙️ 개발 환경
 
-- Frontend: 
-- Backend: 
-- Database: 
+- Frontend: Next.js , TypeScript, React, Tailwinds CSS
+- Backend: Spring Boot, Spring Security + JWT, Layered Architecture 
+- Database: JPA/H2 Database
 
 ---
 
@@ -35,14 +35,10 @@ git clone https://github.com/prgrms-be-devcourse/NBE6-8-1-Children.git
 cd NBE6-8-1-Children
 ```
 ### 2. 백엔드 실행
-```bash
-cd server
-npm install
-npm run dev
-```
+
 ### 3. 프론트엔드 실행
 ```bash
-cd client
+cd frontend
 npm install
 npm run dev
 ```
