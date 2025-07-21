@@ -30,9 +30,13 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/*/members").permitAll()
                                 .requestMatchers("/grid/login").permitAll()
                                 .requestMatchers("/grid/logout").permitAll()
-                                .requestMatchers("/grid/admin**").hasRole("ADMIN")
+
+
                                 .requestMatchers("/grid/shoppingbasket/**").authenticated()
                                 .requestMatchers("/grid/orders/**").authenticated()
+
+                                .requestMatchers("/grid/admin/**").hasRole("ADMIN")
+
                                 .requestMatchers("/api/*/**").authenticated()
                                 .anyRequest().permitAll()
                 )

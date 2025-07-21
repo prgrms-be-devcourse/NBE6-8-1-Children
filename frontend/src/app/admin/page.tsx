@@ -11,14 +11,19 @@ export default function AdminMainPage() {
   const [showDenied, setShowDenied] = useState(false);
 
   useEffect(() => {
+    console.log("auth 상태:", { isLoggedIn, role });
+    let timer;
     if (!isLoggedIn || role !== "ADMIN") {
       setShowDenied(true);
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         router.replace("/");
-      }, 10000);
+      }, 2000);
     } else if (isLoggedIn && role == "ADMIN") {
       setShowDenied(false);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [isLoggedIn, role, router]);
 
   if (showDenied) {
