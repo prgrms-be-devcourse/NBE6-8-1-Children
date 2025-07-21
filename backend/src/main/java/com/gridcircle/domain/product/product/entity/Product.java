@@ -31,4 +31,8 @@ public class Product extends BaseEntity {
         this.price = price;
         this.stock = stock;
     }
+
+    public void updateStock(int stock) {
+        this.stock = stock;
+    }
 }
