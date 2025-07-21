@@ -107,7 +107,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                 int id = (int) payload.get("id");
                 String email = (String) payload.get("email");
                 String name = (String) payload.get("name");
-                member = new Member(id, email, name);
+                String role = (String) payload.get("role");
+                member = new Member(id, email, name, role);
                 isAccessTokenValid = true;
             }
         }

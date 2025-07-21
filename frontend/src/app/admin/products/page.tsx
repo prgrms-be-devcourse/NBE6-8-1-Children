@@ -18,7 +18,9 @@ export default function AdminProductsPage() {
 
   function fetchProducts() {
     setLoading(true);
-    fetch("http://localhost:8080/grid/admin/products")
+    fetch("http://localhost:8080/grid/admin/products", {
+      credentials: "include",
+    })
       .then((res) => {
         if (!res.ok) {
           // 에러 응답일 때, 메시지 파싱해서 throw
@@ -56,6 +58,7 @@ export default function AdminProductsPage() {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) {
@@ -78,6 +81,7 @@ export default function AdminProductsPage() {
   function handleDelete(id: number) {
     fetch(`http://localhost:8080/grid/admin/product/${id}`, {
       method: "DELETE",
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) {

@@ -65,6 +65,7 @@ public class MemberService {
     public Optional<Member> findByApiKey(String apiKey) {
         return memberRepository.findByApiKey(apiKey);
     }
+
     public Map<String, Object> payload(String accessToken) {
         return authTokenService.payload(accessToken);
     }

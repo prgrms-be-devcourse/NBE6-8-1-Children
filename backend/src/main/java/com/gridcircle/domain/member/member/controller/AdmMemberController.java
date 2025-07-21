@@ -6,6 +6,7 @@ import com.gridcircle.domain.member.member.service.MemberService;
 import com.gridcircle.domain.product.product.dto.ProductDto;
 import com.gridcircle.domain.product.product.entity.Product;
 import com.gridcircle.domain.product.product.service.ProductService;
+import com.gridcircle.global.exception.ServiceException;
 import com.gridcircle.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -164,7 +165,9 @@ public class AdmMemberController {
     @DeleteMapping("/product/{id}")
     @Operation(summary = "Admin - 상품 삭제")
     public RsData<Void> delete(@PathVariable int id) {
-        productService.delete(id);
+        Product product = productService.delete(id)
+                .orElseThrow(() -> new ServiceException("400-1","등록되지 않은 상품입니다."));
+
 
         return new RsData<>(
                 "200-1",
